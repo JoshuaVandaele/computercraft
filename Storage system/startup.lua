@@ -164,10 +164,14 @@ topBar.clear()
 topBar.setCursorPos(1, 1)
 topBar.write(usedSlots .. "/" .. slotCount .. " Slots Used")
 
-while true do
-    DrawItems(items, position)
+function eventHandler()
     event, key, x, y = os.pullEvent()
-    storeItem()
+end
+
+while true do
+    if position < 0 then position = 0 end
+    DrawItems(items, position)
+    parallel.waitForAny(eventHandler,storeItem)
     print("Event: "..event)
     if event == "monitor_touch" then
         print("Monitor touched at "..x.."/"..y)
