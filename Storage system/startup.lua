@@ -3,7 +3,7 @@ local deposit_chest = "quark:quark_chest_1630"
 local mon = peripheral.wrap("top")
 local storage = {}
 local i = 0
-
+local position = 0
 
 local width,height = mon.getSize()
 local itemDisplay = window.create(mon,3,2,width-4,height)
@@ -70,6 +70,22 @@ function getItems()
     return items, slotCount, usedSlots
 end
 
+function DrawItems(items, offset)
+    position = offset
+    itemDisplay.clear()
+    itemDisplay.setCursorPos(1,1)
+    local i = 0
+    for k,v in pairs(items) do
+        i = i+1
+        if i > offset then
+            local x,y = itemDisplay.getCursorPos()
+            itemDisplay.setCursorPos(1,y+1)
+            itemDisplay.write(v.count.." "..k)
+            print(v.count.." "..k)
+        end
+    end
+end
+
 seekChests()
 
 items, slotCount, usedSlots = getItems()
@@ -78,23 +94,16 @@ topBar.clear()
 topBar.setCursorPos(1,1)
 topBar.write(usedSlots.."/"..slotCount.." Slots Used")
 
-itemDisplay.clear()
-itemDisplay.setCursorPos(1,1)
-for k,v in pairs(items) do
-        local x,y = itemDisplay.getCursorPos()
-        itemDisplay.setCursorPos(1,y+1)
-        itemDisplay.write(v.count.." "..k)
-        print(v.count.." "..k)
-end
+
 
 while true do
   _,_,x,y = os.pullEvent("monitor_touch")
   if x >= width-2 then
     if y >= height-2 then --down
         print("down")
-        itemDisplay.scroll(3)
+        DrawItems(position+3)
     elseif y >= height-5 then --up
-        itemDisplay.scroll(-3)
+        DrawItems(position-3)
         print("up")
     end
   end
