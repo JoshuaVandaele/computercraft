@@ -88,11 +88,15 @@ end
 function getItem(item, count)
     for key,value in pairs(items[item]) do
         if type(key) == "number" then
-            for _,chest in storage do
+            for _,chest in pairs(storage) do
                 if chest["id"] == key then
-                    chest["peripheral"].pushItems(output_inventory, value[1], count)
-                    items[item]["count"] = items[item]["count"] - count
-                    table.remove(items[item][key], 1)
+                    for slot,cnt in range(value) do
+                        chest["peripheral"].pushItems(output_inventory, slot, count)
+                        items[item]["count"] = items[item]["count"] - count
+                        table.remove(items[item][key], 1)
+                        count = count-cnt
+                        if count < 1 then return end
+                    end
                 end
             end
         end
