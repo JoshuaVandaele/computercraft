@@ -127,6 +127,17 @@ while true do
         end
       end
   else
-    print(keys[key])
+    key = keys[key]
+    x,y = searchBar.getCursorPos()
+    if key == "enter" then
+        searchBar.clear()
+        searchBar.setCursorPos(1,1)
+    end
+    if key == "backspace" then
+        searchBar.setCursorPos(x,y-1)
+        searchBar.write(" ")
+        searchBar.setCursorPos(x,y-1)
+    end
+    searchBar.write(key)
   end
 end
