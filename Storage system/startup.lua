@@ -64,12 +64,7 @@ function addItem(item)
         items[item.displayName] = {
             ["maxDamage"] = item.maxDamage
         }
-
-        if items[item.displayName]["count"] then
-            items[item.displayName]["count"] = items[item.displayName]["count"] + item.count
-        else
-            items[item.displayName]["count"] = item.count
-        end
+        items[item.displayName]["count"] = (items[item.displayName]["count"] or 0) + item.count
 
         if items[item.displayName]["damage"] then
             table.insert(items[item.displayName]["damage"], item.damage)
@@ -146,7 +141,7 @@ while true do
                 print("up")
             end
         end
-    elseif key then
+    elseif key ~= nil then
         key = keys[key]
         x, y = searchBar.getCursorPos()
         if key == "enter" then
