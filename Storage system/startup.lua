@@ -32,6 +32,8 @@ sideBar.setCursorPos(1, height - 1)
 sideBar.write("\\/")
 sideBar.setCursorPos(1, height - 4)
 sideBar.write("/\\")
+sideBar.setCursorPos(1, height - 7)
+sideBar.write("RE")
 
 itemDisplay.setBackgroundColor(colors.white)
 itemDisplay.setTextColor(colors.black)
@@ -140,6 +142,10 @@ while true do
             elseif y >= height - 5 then --up
                 position = position - 3
                 print("up")
+            elseif y >= height - 7 then --up
+                seekChests()
+                getItems()
+                print("refresh")
             end
         end
     elseif key then
