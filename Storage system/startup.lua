@@ -50,10 +50,15 @@ function getItems()
             if item ~= nil then
                 usedSlots = usedSlots + 1
                 items[item.displayName] = { 
-                    ["count"] = (items[item.displayName] or 0) + (item.count or 0),
                     ["maxDamage"] = item.maxDamage,
                 }
  
+                if items[item.displayName]["count"] then
+                    items[item.displayName]["count"] = items[item.displayName]["count"] + item.count
+                else
+                    items[item.displayName]["count"] = item.count
+                end
+
                 if items[item.displayName]["damage"] then
                     table.insert(items[item.displayName]["damage"],item.damage)
                 else
