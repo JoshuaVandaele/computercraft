@@ -20,7 +20,9 @@ while true do
   for _,chest in pairs(storage) do
     for slot = 1,#chest.list() do
       for _,item in pairs(chest.getItemMeta(slot)) do
-        items[item.displayName] = (items[item.displayName] or 0) + (item.count or 0)
+        if item.displayName ~= nil then
+          items[item.displayName] = (items[item.displayName] or 0) + (item.count or 0)
+        end
       end
     end
   end
