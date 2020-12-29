@@ -61,9 +61,13 @@ function storeItem()
     if #peripheral.wrap(input_inventory).list() < 1 then
         return
     end
+    local itemslots
+    print("Items found, storing...")
     for _, chest in pairs(storage) do
-        for slot = 1, peripheral.wrap(input_inventory).size() do
+        for slot = 1,(itemslots or peripheral.wrap(input_inventory).size())  do
+            print("Checking slot "..slot)
             if addItem(peripheral.wrap(input_inventory).getItemMeta(slot), chest, slot) then
+                itemslots = (itemslots or 0)+1
                 print("Storing "..peripheral.wrap(input_inventory).getItemMeta(slot).displayName.." in chest "..chest["id"])
                 chest["peripheral"].pullItems(input_inventory, slot, peripheral.wrap(input_inventory).size() * 64)
             end
@@ -88,6 +92,7 @@ function addItem(item, chest, slot)
         items[item.displayName][chest.id][slot] = item.count
         table.insert(items[item.displayName]["damage"], item.damage)
         table.sort(items)
+        return true
     else
         return false
     end
