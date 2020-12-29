@@ -96,14 +96,15 @@ topBar.write(usedSlots.."/"..slotCount.." Slots Used")
 
 
 
+DrawItems(position)
 while true do
   _,_,x,y = os.pullEvent("monitor_touch")
   if x >= width-2 then
     if y >= height-2 then --down
         print("down")
-        DrawItems(position+3)
+        DrawItems(items, position+3)
     elseif y >= height-5 then --up
-        DrawItems(position-3)
+        DrawItems(items, position-3)
         print("up")
     end
   end
