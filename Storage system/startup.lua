@@ -61,9 +61,10 @@ end
 function addItem(item)
     if item ~= nil then
         usedSlots = usedSlots + 1
-        items[item.displayName] = {
-            ["maxDamage"] = item.maxDamage
-        }
+        if items[item.displayName] == nil then 
+            items[item.displayName] = {}
+        end
+        items[item.displayName]["maxDamage"] = item.maxDamage
         items[item.displayName]["count"] = (items[item.displayName]["count"] or 0) + item.count
 
         if items[item.displayName]["damage"] then
