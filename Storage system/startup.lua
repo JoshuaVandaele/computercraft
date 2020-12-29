@@ -51,8 +51,8 @@ end
 
 function storeItem()
   for _,chest in pairs(storage) do
-    for slot = 1,input_inventory.size() do
-        chest.pullItems(input_inventory,slot,math.huge)
+    for slot = 1,peripheral.wrap(input_inventory).size() do
+        chest.pullItems(input_inventory,slot,peripheral.wrap(input_inventory).size()*64)
     end
   end
 end
@@ -139,7 +139,7 @@ while true do
             print("up")
         end
       end
-  else
+  elseif key then
     key = keys[key]
     x,y = searchBar.getCursorPos()
     if key == "enter" then
