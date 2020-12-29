@@ -12,7 +12,9 @@ local itemDisplay = window.create(mon, 3, 2, width - 4, height - 2)
 local topBar = window.create(mon, 1, 1, width, 1)
 local sideBar = window.create(mon, width - 1, 2, width - 4, height)
 local searchBar = window.create(mon, 3, height, width - 4, 1)
+local requestBar = window.create(mon, 1, 2, 2, height)
 local items = {}
+local request = {}
 
 local _ = {}
 for k, v in pairs(keys) do
@@ -25,6 +27,9 @@ mon.clear()
 
 topBar.setBackgroundColor(colors.black)
 topBar.clear()
+
+requestBar.setBackgroundColor(colors.lightGray)
+requestBar.clear()
 
 sideBar.setBackgroundColor(colors.lightGray) -- width-2, top = 0 & bottom = height
 sideBar.clear()
@@ -46,7 +51,7 @@ function seekChests()
     storage = {}
     for k, v in pairs(peripheral.getNames()) do
         if v:match("chest") and not v:match(output_inventory) then
-            storage[#storage + 1] = peripheral.wrap(v)
+            storage[#storage + 1] = {["peripheral"] = peripheral.wrap(v), ["id"] = #storage}
         end
     end
 end
@@ -54,37 +59,37 @@ end
 function storeItem()
     for _, chest in pairs(storage) do
         for slot = 1, peripheral.wrap(input_inventory).size() do
-            addItem(peripheral.wrap(input_inventory).getItemMeta(slot))
-            chest.pullItems(input_inventory, slot, peripheral.wrap(input_inventory).size() * 64)
+            addItem(peripheral.wrap(input_inventory).getItemMeta(slot), chest, slot)
+            chest["peripheral"].pullItems(input_inventory, slot, peripheral.wrap(input_inventory).size() * 64)
         end
     end
 end
 
-function addItem(item)
+function addItem(item, chest,slot)
     if item ~= nil then
         usedSlots = usedSlots + 1
         if items[item.displayName] == nil then 
             items[item.displayName] = {}
+            items[item.displayName][chest.id] = {}
+            items[item.displayName]["damage"] = {}
+            items[item.displayName]["count"] = 0
         end
-        items[item.displayName]["maxDamage"] = item.maxDamage
-        items[item.displayName]["count"] = (items[item.displayName]["count"] or 0) + item.count
 
-        if items[item.displayName]["damage"] then
-            table.insert(items[item.displayName]["damage"], item.damage)
-        else
-            items[item.displayName]["damage"] = {item.damage}
-        end
+        items[item.displayName]["maxDamage"] = item.maxDamage
+        items[item.displayName][chest.id][slot] = item.count
+        table.insert(items[item.displayName]["damage"], item.damage)
     end
 end
 
 function getItems()
+    itemDisplay.clear()
     items = {}
     slotCount = 0
     usedSlots = 0
     for _, chest in pairs(storage) do
         for slot = 1, chest.size() do
             slotCount = slotCount + 1
-            addItem(chest.getItemMeta(slot))
+            addItem(chest["peripheral"].getItemMeta(slot),chest,slot)
         end
     end
     table.sort(items)
@@ -102,9 +107,7 @@ function DrawItems(items, offset)
             local x, y = itemDisplay.getCursorPos()
             itemDisplay.setCursorPos(1, y + 1)
             if itemData.maxDamage ~= 0 then
-                itemName =
-                    itemName ..
-                    " (" .. math.floor((itemData.maxDamage - itemData.damage[1]) / itemData.maxDamage * 100) .. "%)"
+                itemName = itemName .." (" .. math.floor((itemData.maxDamage - itemData.damage[1]) / itemData.maxDamage * 100) .. "%)"
             end
             if itemData.count < 10 then
                 itemName = " " .. itemName
