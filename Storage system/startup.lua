@@ -96,7 +96,7 @@ topBar.write(usedSlots.."/"..slotCount.." Slots Used")
 
 
 
-DrawItems(position)
+DrawItems(items, position)
 while true do
   _,_,x,y = os.pullEvent("monitor_touch")
   if x >= width-2 then
