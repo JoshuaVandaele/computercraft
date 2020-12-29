@@ -84,7 +84,21 @@ function addItem(item, chest, slot)
     end
 end
 
-function getItems()
+function getItem(item, count)
+    for key,value in pairs(items[item]) do
+        if type(key) == "number" then
+            for _,chest in storage do
+                if chest["id"] == key then
+                    chest["peripheral"].pushItems(output_inventory, value[1], count)
+                    items[item]["count"] = items[item]["count"] - count
+                    table.remove(items[item][key], 1)
+                end
+            end
+        end
+    end
+end
+
+function addItems()
     itemDisplay.clear()
     items = {}
     slotCount = 0
@@ -121,7 +135,7 @@ function DrawItems(items, offset)
 end
 
 seekChests()
-getItems()
+addItems()
 
 topBar.clear()
 topBar.setCursorPos(1, 1)
@@ -150,7 +164,7 @@ while true do
                 print("up")
             elseif y >= height - 7 then --up
                 seekChests()
-                getItems()
+                addItems()
                 print("refresh")
             end
         end
