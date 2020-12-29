@@ -12,9 +12,10 @@ local itemDisplay = window.create(mon, 3, 2, width - 4, height - 2)
 local topBar = window.create(mon, 1, 1, width, 1)
 local sideBar = window.create(mon, width - 1, 2, width - 4, height)
 local searchBar = window.create(mon, 3, height, width - 4, 1)
-local requestBar = window.create(mon, 1, 2, 2, height)
+local requestBar = window.create(mon, 1, 2, 2, height-2)
 local items = {}
 local request = {}
+local drawnItems = {}
 
 local _ = {}
 for k, v in pairs(keys) do
@@ -114,6 +115,7 @@ function addItems()
 end
 
 function DrawItems(items, offset)
+    drawnItems = {}
     position = offset
     itemDisplay.clear()
     requestBar.clear()
@@ -122,6 +124,7 @@ function DrawItems(items, offset)
     for itemName, itemData in pairs(items) do
         i = i + 1
         if i > offset and itemName:lower():find(search) then
+            drawnItems[i-offset] = itemName
             local x, y = itemDisplay.getCursorPos()
             requestBar.setCursorPos(1,y+1)
             itemDisplay.setCursorPos(1, y + 1)
@@ -132,7 +135,7 @@ function DrawItems(items, offset)
                 itemName = " " .. itemName
             end
             itemDisplay.write(itemData.count .. " " .. itemName)
-            requestBar.write("+")
+            requestBar.write(" +")
         end
     end
 end
@@ -169,7 +172,11 @@ while true do
                 seekChests()
                 addItems()
                 print("refresh")
-            end
+            elseif  y < height-2 then
+                if x <= 2 then
+                    getItem(drawnItems[y-1],64)
+                end
+            end  --x, y, width, height 1, 2, 2, height-2)
         end
     elseif key then
         key = keys[key] or ""
