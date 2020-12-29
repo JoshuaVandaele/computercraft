@@ -65,17 +65,20 @@ function storeItem()
     end
 end
 
-function addItem(item, chest,slot)
+function addItem(item, chest, slot)
     if item ~= nil then
         usedSlots = usedSlots + 1
         if items[item.displayName] == nil then 
             items[item.displayName] = {}
-            items[item.displayName][chest.id] = {}
             items[item.displayName]["damage"] = {}
             items[item.displayName]["count"] = 0
         end
+        if items[item.displayName][chest.id] == nil then
+            items[item.displayName][chest.id] = {}
+        end
 
         items[item.displayName]["maxDamage"] = item.maxDamage
+        items[item.displayName]["count"] = items[item.displayName]["count"] + item.count
         items[item.displayName][chest.id][slot] = item.count
         table.insert(items[item.displayName]["damage"], item.damage)
     end
@@ -87,7 +90,7 @@ function getItems()
     slotCount = 0
     usedSlots = 0
     for _, chest in pairs(storage) do
-        for slot = 1, chest.size() do
+        for slot = 1, chest["peripheral"].size() do
             slotCount = slotCount + 1
             addItem(chest["peripheral"].getItemMeta(slot),chest,slot)
         end
