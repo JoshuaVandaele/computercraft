@@ -6,9 +6,18 @@ local i = 0
 
 
 local width,height = mon.getSize()
-local itemDisplay = window.create(mon,3,6,width-3,height)
+local itemDisplay = window.create(mon,3,2,width-4,height)
+local topBar = window.create(mon,1,1,width,2)
+local sideBar = window.create(mon,width-1,2,2,height)
+
 mon.setBackgroundColor(colors.lightGray)
 mon.clear()
+
+topBar.setBackgroundColor(colors.gray)
+topBar.clear()
+
+sideBar.setBackgroundColor(colors.lightGray)
+sideBar.clear()
 
 itemDisplay.setBackgroundColor(colors.white)
 itemDisplay.clear()
@@ -24,10 +33,14 @@ end
 
 function getItems()
     local items = {}
+    local slotCount = 0
+    local usedSlots = 0
     for _,chest in pairs(storage) do
         for slot = 1,chest.size() do
+            slotCount = slotCount + 1
             item = chest.getItemMeta(slot)
             if item ~= nil then
+                usedSlots = usedSlots + 1
                 items[item.displayName] = { 
                     ["count"] = (items[item.displayName] or 0) + (item.count or 0),
                     ["maxDamage"] = item.maxDamage,
@@ -41,13 +54,16 @@ function getItems()
             end
         end
     end
-    return items
+    return items, slotCount, usedSlots
 end
 
 seekChests()
 
-items = getItems()
+items, slotCount, usedSlots = getItems()
 
+topBar.clear()
+topBar.setCursorPos(1,1)
+topBar.write(usedSlots.."/"..slotCount.." Slots Used - Made By Folfy Blue")
 itemDisplay.setCursorPos(1,1)
 for k,v in pairs(items) do
         local x,y = itemDisplay.getCursorPos()
