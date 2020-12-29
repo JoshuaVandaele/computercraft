@@ -11,6 +11,12 @@ local topBar = window.create(mon,1,1,width,1)
 local sideBar = window.create(mon,width-1,2,width-4,height)
 local searchBar = window.create(mon,3,height,width-4,1)
 
+local _={}
+for k,v in pairs(keys) do
+ s[v]=k
+end
+keys = _
+
 mon.setBackgroundColor(colors.lightGray)
 mon.clear()
 
@@ -30,7 +36,7 @@ itemDisplay.setTextColor(colors.black)
 itemDisplay.clear()
 
 searchBar.setBackgroundColor(colors.lightBlue)
-itemDisplay.clear()
+searchBar.clear()
 
 function seekChests()
     storage = {}
@@ -102,14 +108,18 @@ topBar.write(usedSlots.."/"..slotCount.." Slots Used")
 
 DrawItems(items, position)
 while true do
-  _,_,x,y = os.pullEvent("monitor_touch")
-  if x >= width-2 then
-    if y >= height-2 then --down
-        print("down")
-        DrawItems(items, position+3)
-    elseif y >= height-5 then --up
-        DrawItems(items, position-3)
-        print("up")
-    end
+  _,key,x,y = parallel.waitForAny(os.pullEvent("monitor_touch"),os.pullEvent("key"))
+  if x then
+      if x >= width-2 then
+        if y >= height-2 then --down
+            print("down")
+            DrawItems(items, position+3)
+        elseif y >= height-5 then --up
+            DrawItems(items, position-3)
+            print("up")
+        end
+      end
+  else
+    print(keys[key])
   end
 end
