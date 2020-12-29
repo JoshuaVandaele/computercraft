@@ -172,12 +172,15 @@ while true do
                 seekChests()
                 addItems()
                 print("refresh")
-            elseif  y < height-2 then
-                if x <= 2 then
-                    getItem(drawnItems[y-1],64)
-                end
             end  --x, y, width, height 1, 2, 2, height-2)
         end
+
+        if  y < height-2 then
+            if x <= 2 then
+                getItem(drawnItems[y-1],64)
+            end
+        end
+
     elseif key then
         key = keys[key] or ""
         x, y = searchBar.getCursorPos()
