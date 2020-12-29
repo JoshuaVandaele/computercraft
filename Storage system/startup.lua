@@ -25,14 +25,12 @@ while true do
             ["count"] = (items[item.displayName] or 0) + (item.count or 0),
             ["maxDamage"] = item.maxDamage,
           }
-
           if items[item.displayName]["damage"] then
             table.insert(items[item.displayName]["damage"],item.damage)
           else
             items[item.displayName]["damage"] = {item.damage}
           end
         end
-
       end
     end
   end
@@ -40,5 +38,4 @@ while true do
   for k,v in pairs(items) do
     print(k,v)
   end
-
 end
