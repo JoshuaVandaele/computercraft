@@ -18,11 +18,21 @@ while true do
   items = {}
 
   for _,chest in pairs(storage) do
-    for slot = 1,#chest.list() do
+    for slot = 1,chest.size() do
       for _,item in pairs(chest.getItemMeta(slot)) do
-        if item.displayName ~= nil then
-          items[item.displayName] = (items[item.displayName] or 0) + (item.count or 0)
+        if item ~= nil then
+
+          items[item.displayName] = { 
+            ["count"] = (items[item.displayName] or 0) + (item.count or 0),
+            ["maxDamage"] = item.maxDamage,
+          }
+
+        if items[item.displayName]["damage"] then
+          table.insert(items[item.displayName]["damage"],item.damage)
+        else
+          items[item.displayName]["damage"] = {item.damage}
         end
+
       end
     end
   end
