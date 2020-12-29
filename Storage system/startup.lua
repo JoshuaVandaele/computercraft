@@ -166,6 +166,10 @@ topBar.write(usedSlots .. "/" .. slotCount .. " Slots Used")
 
 function eventHandler()
     event, key, x, y = os.pullEvent()
+    if event == "plethora_task" then
+        eventHandler()
+    end
+    return
 end
 
 while true do
