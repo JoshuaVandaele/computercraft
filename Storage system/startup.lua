@@ -94,6 +94,7 @@ function addItem(item, chest, slot)
 end
 
 function getItem(item, count)
+    if not item then return end
     for key,value in pairs(items[item]) do
         if type(key) == "number" then
             for _,chest in pairs(storage) do
@@ -162,19 +163,20 @@ while true do
     DrawItems(items, position)
     event, key, x, y = os.pullEvent()
     storeItem()
-
+    print("Event: "..event)
     if event == "monitor_touch" then
+        print("Monitor touched at "..x.."/"..y)
         if x >= width - 2 then
             if y >= height - 2 then --down
-                print("down")
+                print("\\/ Pressed")
                 position = position + 3
             elseif y >= height - 5 then --up
                 position = position - 3
-                print("up")
+                print("/\\ Pressed")
             elseif y >= height - 7 then --up
                 seekChests()
                 addItems()
-                print("refresh")
+                print("Refresh Pressed")
             end  --x, y, width, height 1, 2, 2, height-2)
         end
 
@@ -184,6 +186,7 @@ while true do
     elseif event == "key" then
         position = 0
         key = keys[key] or ""
+        print("Key "..key.." pressed")
         x, y = searchBar.getCursorPos()
         if key == "enter" then
             search = ""
@@ -200,7 +203,7 @@ while true do
             key = ""
         end
         search = search .. key
-
+        print("Searching: "..search)
         searchBar.clear()
         searchBar.setCursorPos(1, 1)
         searchBar.write(search)
