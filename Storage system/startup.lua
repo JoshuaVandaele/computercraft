@@ -7,7 +7,7 @@ local position = 0
 local search = ""
 
 local width,height = mon.getSize()
-local itemDisplay = window.create(mon,3,2,width-4,height-1)
+local itemDisplay = window.create(mon,3,2,width-4,height-2)
 local topBar = window.create(mon,1,1,width,1)
 local sideBar = window.create(mon,width-1,2,width-4,height)
 local searchBar = window.create(mon,3,height,width-4,1)
@@ -92,6 +92,9 @@ function DrawItems(items, offset)
             itemDisplay.setCursorPos(1,y+1)
             if itemData.maxDamage ~= 0 then
                 itemName = itemName.." ("..math.floor((itemData.maxDamage-itemData.damage[1])/itemData.maxDamage*100).."%)"
+            end
+            if itemData.count < 10 then
+                itemName = " "..itemName
             end
             itemDisplay.write(itemData.count.." "..itemName)
         end
