@@ -4,8 +4,11 @@ local mon = peripheral.wrap("top")
 local storage = {}
 local i = 0
 
+
 local width,height = mon.getSize()
-local itemDisplay = window.create(mon,3,1,width,height-6)
+local itemDisplay = window.create(mon,3,6,width-3,height)
+mon.setBackgroundColor(colors.lightGray)
+mon.clear()
 
 itemDisplay.setBackgroundColor(colors.white)
 itemDisplay.clear()
