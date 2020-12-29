@@ -160,7 +160,7 @@ topBar.write(usedSlots .. "/" .. slotCount .. " Slots Used")
 
 while true do
     DrawItems(items, position)
-    event, _, x, y, key = os.pullEvent()
+    event, key, x, y = os.pullEvent()
     storeItem()
 
     if event == "monitor_touch" then
