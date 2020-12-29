@@ -76,6 +76,7 @@ function getItems()
             end
         end
     end
+    table.sort(items)
     return items, slotCount, usedSlots
 end
 
@@ -90,7 +91,7 @@ function DrawItems(items, offset)
             local x,y = itemDisplay.getCursorPos()
             itemDisplay.setCursorPos(1,y+1)
             if itemData.maxDamage ~= 0 then
-                itemName = itemName.." ("..((itemData.maxDamage-itemData.damage[1])/itemData.maxDamage*100).."%)"
+                itemName = itemName.." ("..math.floor((itemData.maxDamage-itemData.damage[1])/itemData.maxDamage*100).."%)"
             end
             itemDisplay.write(itemData.count.." "..itemName)
         end
