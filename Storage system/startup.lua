@@ -143,6 +143,7 @@ while true do
         key = ""
     end
     if key == "space" then key = ' ' end
+    if #key > 1 then key = "" end
     search = search..key
 
     searchBar.clear()
