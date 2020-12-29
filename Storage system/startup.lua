@@ -20,10 +20,11 @@ topBar.clear()
 
 sideBar.setBackgroundColor(colors.lightGray) -- width-2, top = 0 & bottom = height
 sideBar.clear()
-sideBar.setCursorPos(1,height)
-sideBar.write("v")
-sideBar.setCursorPos(1,height-2)
-sideBar.write("^")
+sideBar.setTextScale(2)
+sideBar.setCursorPos(1,height-1)
+sideBar.write("\\/")
+sideBar.setCursorPos(1,height-4)
+sideBar.write("/\\")
 
 
 itemDisplay.setBackgroundColor(colors.white)
@@ -80,4 +81,15 @@ for k,v in pairs(items) do
         itemDisplay.setCursorPos(1,y+1)
         itemDisplay.write(v.count.." "..k)
         print(v.count.." "..k)
+end
+
+while true do
+  _,_,x,y = os.pullEvent("monitor_touch")
+  if x >= width-2 then
+    if y =< height-2 then
+        print("down")
+    elseif y <= height-5 then
+        print("up")
+    end
+  end
 end
