@@ -159,10 +159,16 @@ function keyHandler()
     _, key = os.pullEvent("key")
 end
 
+function yielding()
+    os.queueEvent("fakeEvent")
+    sleep(10)
+    os.pullEvent()
+end
+
 while true do
     DrawItems(items, position)
     x, y, key = 0, 0, 0
-    parallel.waitForAny(clickHandler, keyHandler, storeItem)
+    parallel.waitForAny(clickHandler, keyHandler, storeItem, yielding)
 
     if x > 0 then
         if x >= width - 2 then
@@ -178,7 +184,7 @@ while true do
                 print("refresh")
             end  --x, y, width, height 1, 2, 2, height-2)
         end
-        
+
         if x <= 2 then
             getItem(drawnItems[y-1],64)
         end
