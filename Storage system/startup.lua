@@ -4,8 +4,11 @@ local mon = peripheral.wrap("top")
 local storage = {}
 local i = 0
 
-local width,height = term.getSize()
-local itemDisplay = window.create(mon.current(),3,1,width,height-6)
+local width,height = mon.getSize()
+local itemDisplay = window.create(mon,3,1,width,height-6)
+
+itemDisplay.setBackgroundColor(colors.white)
+itemDisplay.clear()
 
 function seekChests()
     storage = {}
@@ -42,11 +45,10 @@ seekChests()
 
 items = getItems()
 
-mon.setCursorPos(1,startPos)
-
+itemDisplay.setCursorPos(1,1)
 for k,v in pairs(items) do
-        local x,y = mon.getCursorPos()
-        mon.setCursorPos(1,y+1)
-        mon.clearLine()
-        mon.write(v.count.." "..k.."\n")
+        local x,y = itemDisplay.getCursorPos()
+        itemDisplay.setCursorPos(1,y+1)
+        itemDisplay.clearLine()
+        itemDisplay.write(v.count.." "..k)
 end
