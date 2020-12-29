@@ -182,6 +182,7 @@ while true do
             getItem(drawnItems[y-1],64)
         end
     elseif event == "key" then
+        position = 0
         key = keys[key] or ""
         x, y = searchBar.getCursorPos()
         if key == "enter" then
