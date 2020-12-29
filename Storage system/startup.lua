@@ -149,7 +149,7 @@ while true do
             end
         end
     elseif key then
-        key = keys[key]
+        key = keys[key] or ""
         x, y = searchBar.getCursorPos()
         if key == "enter" then
             search = ""
@@ -162,7 +162,7 @@ while true do
         if key == "space" then
             key = " "
         end
-        if (#key or 0) > 1 then
+        if #key > 1 then
             key = ""
         end
         search = search .. key
