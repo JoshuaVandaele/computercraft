@@ -1,5 +1,6 @@
-local deposit_chest = "quark:quark_chest_1630"
-  
+local output_inventory = "quark:quark_chest_1630"
+local input_inventory = "minecraft:ironchest_iron_2052"
+
 local mon = peripheral.wrap("top")
 local storage = {}
 local i = 0
@@ -14,7 +15,7 @@ local searchBar = window.create(mon,3,height,width-4,1)
 
 local _={}
 for k,v in pairs(keys) do
- _[v]=k
+  _[v]=k
 end
 keys = _
 
@@ -42,16 +43,24 @@ searchBar.clear()
 function seekChests()
     storage = {}
     for k,v in pairs(peripheral.getNames()) do
-        if v:match("chest") and not v:match(deposit_chest) then
+        if v:match("chest") and not v:match(output_inventory) then
             storage[#storage+1] = peripheral.wrap(v)
         end
     end
 end
 
+function storeItem()
+  for _,chest in pairs(storage) do
+    for slot = 1,input_inventory.size() do
+        chest.pullItems(input_inventory,slot,math.huge)
+    end
+  end
+end
+
 function getItems()
-    local items = {}
-    local slotCount = 0
-    local usedSlots = 0
+    items = {}
+    slotCount = 0
+    usedSlots = 0
     for _,chest in pairs(storage) do
         for slot = 1,chest.size() do
             slotCount = slotCount + 1
@@ -102,8 +111,7 @@ function DrawItems(items, offset)
 end
 
 seekChests()
-
-items, slotCount, usedSlots = getItems()
+getItems()
 
 topBar.clear()
 topBar.setCursorPos(1,1)
@@ -120,7 +128,7 @@ end
 while true do
   DrawItems(items, position)
   x, y, key = 0,0,0
-  parallel.waitForAny(clickHandler,keyHandler)
+  parallel.waitForAny(clickHandler,keyHandler,storeItem)
   if x>0 then
       if x >= width-2 then
         if y >= height-2 then --down
