@@ -151,26 +151,12 @@ topBar.clear()
 topBar.setCursorPos(1, 1)
 topBar.write(usedSlots .. "/" .. slotCount .. " Slots Used")
 
-function clickHandler()
-    _, _, x, y = os.pullEvent("monitor_touch")
-end
-
-function keyHandler()
-    _, key = os.pullEvent("key")
-end
-
-function yielding()
-    os.queueEvent("fakeEvent")
-    sleep(10)
-    os.pullEvent()
-end
-
 while true do
     DrawItems(items, position)
-    x, y, key = 0, 0, 0
-    parallel.waitForAny(clickHandler, keyHandler, storeItem, yielding)
+    event, x, y, key = os.pullEvent()
+    storeItem()
 
-    if x > 0 then
+    if event == "monitor_touch" then
         if x >= width - 2 then
             if y >= height - 2 then --down
                 print("down")
@@ -190,7 +176,7 @@ while true do
         end
 
 
-    elseif key then
+    elseif event == "key" then
         key = keys[key] or ""
         x, y = searchBar.getCursorPos()
         if key == "enter" then
