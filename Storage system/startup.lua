@@ -4,6 +4,7 @@ local mon = peripheral.wrap("top")
 local storage = {}
 local i = 0
 local position = 0
+local search = ""
 
 local width,height = mon.getSize()
 local itemDisplay = window.create(mon,3,2,width-4,height)
@@ -130,14 +131,16 @@ while true do
     key = keys[key]
     x,y = searchBar.getCursorPos()
     if key == "enter" then
-        searchBar.clear()
-        searchBar.setCursorPos(1,1)
+        search = ""
     end
     if key == "backspace" then
-        searchBar.setCursorPos(x,y-1)
-        searchBar.write(" ")
-        searchBar.setCursorPos(x,y-1)
+        search = search:sub(1, -2)
     end
-    searchBar.write(key)
+    if key == "space" then key = ' ' end
+    search = search+key
+
+    searchBar.clear()
+    searchBar.setCursorPos(1,1)
+    searchBar.write(search)
   end
 end
