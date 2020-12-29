@@ -178,12 +178,11 @@ while true do
                 print("refresh")
             end  --x, y, width, height 1, 2, 2, height-2)
         end
-
-        if  y < height-2 then
-            if x <= 2 then
-                getItem(drawnItems[y-1],64)
-            end
+        
+        if x <= 2 then
+            getItem(drawnItems[y-1],64)
         end
+
 
     elseif key then
         key = keys[key] or ""
