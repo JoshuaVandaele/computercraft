@@ -113,17 +113,17 @@ function keyHandler()
     _,key = os.pullEvent("key")
 end
 
-DrawItems(items, position)
 while true do
+  DrawItems(items, position)
   x, y, key = 0,0,0
   parallel.waitForAny(clickHandler,keyHandler)
   if x>0 then
       if x >= width-2 then
         if y >= height-2 then --down
             print("down")
-            DrawItems(items, position+3)
+            position =  position+3
         elseif y >= height-5 then --up
-            DrawItems(items, position-3)
+            position = position-3
             print("up")
         end
       end
