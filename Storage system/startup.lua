@@ -8,18 +8,26 @@ local i = 0
 local width,height = mon.getSize()
 local itemDisplay = window.create(mon,3,2,width-4,height)
 local topBar = window.create(mon,1,1,width,2)
-local sideBar = window.create(mon,width-1,2,2,height)
+local sideBar = window.create(mon,width-1,2,width-4,height)
+
+
 
 mon.setBackgroundColor(colors.lightGray)
 mon.clear()
 
-topBar.setBackgroundColor(colors.gray)
+topBar.setBackgroundColor(colors.black)
 topBar.clear()
 
-sideBar.setBackgroundColor(colors.lightGray)
+sideBar.setBackgroundColor(colors.lightGray) -- width-2, top = 0 & bottom = height
 sideBar.clear()
+sideBar.setCursorPos(1,height)
+sideBar.write("v")
+sideBar.setCursorPos(1,height-2)
+sideBar.write("^")
+
 
 itemDisplay.setBackgroundColor(colors.white)
+itemDisplay.setTextColor(colors.black)
 itemDisplay.clear()
 
 function seekChests()
@@ -63,11 +71,13 @@ items, slotCount, usedSlots = getItems()
 
 topBar.clear()
 topBar.setCursorPos(1,1)
-topBar.write(usedSlots.."/"..slotCount.." Slots Used - Made By Folfy Blue")
+topBar.write(usedSlots.."/"..slotCount.." Slots Used")
+
+itemDisplay.clear()
 itemDisplay.setCursorPos(1,1)
 for k,v in pairs(items) do
         local x,y = itemDisplay.getCursorPos()
         itemDisplay.setCursorPos(1,y+1)
-        itemDisplay.clearLine()
         itemDisplay.write(v.count.." "..k)
+        print(v.count.." "..k)
 end
