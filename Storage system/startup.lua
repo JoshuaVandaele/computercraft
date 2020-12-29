@@ -12,6 +12,7 @@ local itemDisplay = window.create(mon,3,2,width-4,height-2)
 local topBar = window.create(mon,1,1,width,1)
 local sideBar = window.create(mon,width-1,2,width-4,height)
 local searchBar = window.create(mon,3,height,width-4,1)
+local items = {}
 
 local _={}
 for k,v in pairs(keys) do
@@ -52,9 +53,31 @@ end
 function storeItem()
   for _,chest in pairs(storage) do
     for slot = 1,peripheral.wrap(input_inventory).size() do
+        addItem(peripheral.wrap(input_inventory).getItemMeta(slot))
         chest.pullItems(input_inventory,slot,peripheral.wrap(input_inventory).size()*64)
     end
   end
+end
+
+function addItem(item)
+    if item ~= nil then
+        usedSlots = usedSlots + 1
+        items[item.displayName] = { 
+            ["maxDamage"] = item.maxDamage,
+        }
+
+        if items[item.displayName]["count"] then
+            items[item.displayName]["count"] = items[item.displayName]["count"] + item.count
+        else
+            items[item.displayName]["count"] = item.count
+        end
+
+        if items[item.displayName]["damage"] then
+            table.insert(items[item.displayName]["damage"],item.damage)
+        else
+            items[item.displayName]["damage"] = {item.damage}
+        end
+    end
 end
 
 function getItems()
@@ -64,25 +87,7 @@ function getItems()
     for _,chest in pairs(storage) do
         for slot = 1,chest.size() do
             slotCount = slotCount + 1
-            item = chest.getItemMeta(slot)
-            if item ~= nil then
-                usedSlots = usedSlots + 1
-                items[item.displayName] = { 
-                    ["maxDamage"] = item.maxDamage,
-                }
- 
-                if items[item.displayName]["count"] then
-                    items[item.displayName]["count"] = items[item.displayName]["count"] + item.count
-                else
-                    items[item.displayName]["count"] = item.count
-                end
-
-                if items[item.displayName]["damage"] then
-                    table.insert(items[item.displayName]["damage"],item.damage)
-                else
-                    items[item.displayName]["damage"] = {item.damage}
-                end
-            end
+            addItem(chest.getItemMeta(slot))
         end
     end
     table.sort(items)
