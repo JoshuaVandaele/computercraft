@@ -83,6 +83,7 @@ function addItem(item, chest, slot)
         items[item.displayName][chest.id][slot] = item.count
         table.insert(items[item.displayName]["damage"], item.damage)
     end
+    table.sort(items)
 end
 
 function getItem(item, count)
@@ -90,9 +91,9 @@ function getItem(item, count)
         if type(key) == "number" then
             for _,chest in pairs(storage) do
                 if chest["id"] == key then
-                    for slot,cnt in range(value) do
+                    for slot,cnt in pairs(value) do
                         chest["peripheral"].pushItems(output_inventory, slot, count)
-                        items[item]["count"] = items[item]["count"] - count
+                        items[item]["count"] = items[item]["count"] - cnt
                         table.remove(items[item][key], 1)
                         count = count-cnt
                         if count < 1 then return end
@@ -114,7 +115,6 @@ function addItems()
             addItem(chest["peripheral"].getItemMeta(slot),chest,slot)
         end
     end
-    table.sort(items)
     return items, slotCount, usedSlots
 end
 
