@@ -73,7 +73,7 @@ end
 function DrawItems(items, offset)
     position = offset
     itemDisplay.clear()
-    itemDisplay.setCursorPos(1,0)
+    itemDisplay.setCursorPos(-1,0)
     local i = 0
     for itemName,itemData in pairs(items) do
         i = i+1
@@ -81,8 +81,9 @@ function DrawItems(items, offset)
             local x,y = itemDisplay.getCursorPos()
             itemDisplay.setCursorPos(1,y+1)
             if itemData.maxDamage ~= 0 then
-                itemName = itemName.." "..(itemData.damage/itemData.maxDamage*100).."%"
+                itemName = itemName.." ("..((itemData.maxDamage-itemData.damage[1])/itemData.maxDamage*100).."%)"
             end
+            itemName = "+ "..itemName
             itemDisplay.write(itemData.count.." "..itemName)
         end
     end
