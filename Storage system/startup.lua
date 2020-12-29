@@ -57,24 +57,6 @@ function seekChests()
     end
 end
 
-function storeItem()
-    if #peripheral.wrap(input_inventory).list() < 1 then
-        return
-    end
-    local itemslots
-    print("Items found, storing...")
-    for _, chest in pairs(storage) do
-        for slot = 1,(itemslots or peripheral.wrap(input_inventory).size())  do
-            print("Checking slot "..slot)
-            if addItem(peripheral.wrap(input_inventory).getItemMeta(slot), chest, slot) then
-                itemslots = (itemslots or 0)+1
-                print("Storing "..peripheral.wrap(input_inventory).getItemMeta(slot).displayName.." in chest "..chest["id"])
-                chest["peripheral"].pullItems(input_inventory, slot, peripheral.wrap(input_inventory).size() * 64)
-            end
-        end
-    end
-end
-
 function addItem(item, chest, slot)
     if item ~= nil then
         usedSlots = usedSlots + 1
@@ -164,57 +146,78 @@ topBar.clear()
 topBar.setCursorPos(1, 1)
 topBar.write(usedSlots .. "/" .. slotCount .. " Slots Used")
 
-function eventHandler()
-    event, key, x, y = os.pullEvent()
-    return
-end
-
-while true do
-    if position < 0 then position = 0 end
-    DrawItems(items, position)
-    parallel.waitForAny(eventHandler,storeItem)
-    if event == "monitor_touch" then
-        print("Monitor touched at "..x.."/"..y)
-        if x >= width - 2 then
-            if y >= height - 2 then --down
-                print("\\/ Pressed")
-                position = position + 3
-            elseif y >= height - 5 then --up
-                position = position - 3
-                print("/\\ Pressed")
-            elseif y >= height - 7 then --up
-                seekChests()
-                addItems()
-                print("Refresh Pressed")
-            end  --x, y, width, height 1, 2, 2, height-2)
+function storeItem()
+    inv = inv
+    while true do
+        if #inv.list() > 1 then
+            local itemslots
+            print("Items found, storing...")
+            for _, chest in pairs(storage) do
+                for slot = 1,(itemslots or inv.size())  do
+                    print("Checking slot "..slot)
+                    if addItem(inv.getItemMeta(slot), chest, slot) then
+                        itemslots = (itemslots or 0)+1
+                        print("Storing "..inv.getItemMeta(slot).displayName.." in chest "..chest["id"])
+                        chest["peripheral"].pullItems(input_inventory, slot, inv.size() * 64)
+                    end
+                end
+            end
         end
-
-        if x <= 2 then
-            getItem(drawnItems[y-1],64)
-        end
-    elseif event == "key" then
-        position = 0
-        key = keys[key] or ""
-        print("Key "..key.." pressed")
-        x, y = searchBar.getCursorPos()
-        if key == "enter" then
-            search = ""
-            key = ""
-        end
-        if key == "backspace" then
-            search = search:sub(1, -2)
-            key = ""
-        end
-        if key == "space" then
-            key = " "
-        end
-        if #key > 1 then
-            key = ""
-        end
-        search = search .. key
-        print("Searching: "..search)
-        searchBar.clear()
-        searchBar.setCursorPos(1, 1)
-        searchBar.write(search)
     end
 end
+
+function eventHandler()
+    while true do
+        if position < 0 then position = 0 end
+        DrawItems(items, position)
+        event, key, x, y = os.pullEvent()
+        print(event)
+        if event == "monitor_touch" then
+            print("Monitor touched at "..x.."/"..y)
+            if x >= width - 2 then
+                if y >= height - 2 then --down
+                    print("\\/ Pressed")
+                    position = position + 3
+                elseif y >= height - 5 then --up
+                    position = position - 3
+                    print("/\\ Pressed")
+                elseif y >= height - 7 then --up
+                    seekChests()
+                    addItems()
+                    print("Refresh Pressed")
+                end  --x, y, width, height 1, 2, 2, height-2)
+            end
+
+            if x <= 2 then
+                getItem(drawnItems[y-1],64)
+            end
+
+        elseif event == "key" then
+            position = 0
+            key = keys[key] or ""
+            print("Key "..key.." pressed")
+            x, y = searchBar.getCursorPos()
+            if key == "enter" then
+                search = ""
+                key = ""
+            end
+            if key == "backspace" then
+                search = search:sub(1, -2)
+                key = ""
+            end
+            if key == "space" then
+                key = " "
+            end
+            if #key > 1 then
+                key = ""
+            end
+            search = search .. key
+            print("Searching: "..search)
+            searchBar.clear()
+            searchBar.setCursorPos(1, 1)
+            searchBar.write(search)
+        end
+    end
+end
+
+parallel.waitForAny(eventHandler,storeItem)
