@@ -58,13 +58,13 @@ function seekChests()
 end
 
 function storeItem()
+    if #peripheral.wrap(input_inventory).list() < 1 then
+        return
+    end
     for _, chest in pairs(storage) do
         for slot = 1, peripheral.wrap(input_inventory).size() do
-            if #peripheral.wrap(input_inventory).list() < 1 then
-                return
-            end
             if addItem(peripheral.wrap(input_inventory).getItemMeta(slot), chest, slot) then
-                hasItems = true
+                print("Storing "..peripheral.wrap(input_inventory).getItemMeta(slot).displayName.." in chest "..chest["id"])
                 chest["peripheral"].pullItems(input_inventory, slot, peripheral.wrap(input_inventory).size() * 64)
             end
         end
