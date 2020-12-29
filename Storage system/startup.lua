@@ -59,9 +59,14 @@ end
 
 function storeItem()
     for _, chest in pairs(storage) do
+        local hasItems = false
         for slot = 1, peripheral.wrap(input_inventory).size() do
-            addItem(peripheral.wrap(input_inventory).getItemMeta(slot), chest, slot)
-            chest["peripheral"].pullItems(input_inventory, slot, peripheral.wrap(input_inventory).size() * 64)
+            if addItem(peripheral.wrap(input_inventory).getItemMeta(slot), chest, slot) then
+                hasItems = true
+                chest["peripheral"].pullItems(input_inventory, slot, peripheral.wrap(input_inventory).size() * 64)
+            elseif slot = peripheral.wrap(input_inventory).size() and not hasItems then
+                return
+            end
         end
     end
 end
@@ -82,6 +87,8 @@ function addItem(item, chest, slot)
         items[item.displayName]["count"] = items[item.displayName]["count"] + item.count
         items[item.displayName][chest.id][slot] = item.count
         table.insert(items[item.displayName]["damage"], item.damage)
+    else
+        return false
     end
     table.sort(items)
 end
@@ -174,8 +181,6 @@ while true do
         if x <= 2 then
             getItem(drawnItems[y-1],64)
         end
-
-
     elseif event == "key" then
         key = keys[key] or ""
         x, y = searchBar.getCursorPos()
