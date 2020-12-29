@@ -7,7 +7,7 @@ local i = 0
 
 local width,height = mon.getSize()
 local itemDisplay = window.create(mon,3,2,width-4,height)
-local topBar = window.create(mon,1,1,width,2)
+local topBar = window.create(mon,1,1,width,1)
 local sideBar = window.create(mon,width-1,2,width-4,height)
 
 
@@ -20,7 +20,6 @@ topBar.clear()
 
 sideBar.setBackgroundColor(colors.lightGray) -- width-2, top = 0 & bottom = height
 sideBar.clear()
-sideBar.setTextScale(2)
 sideBar.setCursorPos(1,height-1)
 sideBar.write("\\/")
 sideBar.setCursorPos(1,height-4)
@@ -86,9 +85,11 @@ end
 while true do
   _,_,x,y = os.pullEvent("monitor_touch")
   if x >= width-2 then
-    if y =< height-2 then
+    if y >= height-2 then --down
         print("down")
-    elseif y <= height-5 then
+        itemDisplay.scroll(3)
+    elseif y >= height-5 then --up
+        itemDisplay.scroll(-3)
         print("up")
     end
   end
