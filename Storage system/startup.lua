@@ -13,7 +13,7 @@ local searchBar = window.create(mon,3,height,width-4,1)
 
 local _={}
 for k,v in pairs(keys) do
- s[v]=k
+ _[v]=k
 end
 keys = _
 
@@ -104,12 +104,19 @@ topBar.clear()
 topBar.setCursorPos(1,1)
 topBar.write(usedSlots.."/"..slotCount.." Slots Used")
 
+function clickHandler()
+    _,_,x,y = os.pullEvent("monitor_touch")
+end
 
+function keyHandler()
+    _,key = os.pullEvent("key")
+end
 
 DrawItems(items, position)
 while true do
-  _,key,x,y = parallel.waitForAny(os.pullEvent("monitor_touch"),os.pullEvent("key"))
-  if x then
+  x, y, key = 0,0,0
+  parallel.waitForAny(clickHandler,keyHandler)
+  if x>0 then
       if x >= width-2 then
         if y >= height-2 then --down
             print("down")
