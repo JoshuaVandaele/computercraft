@@ -116,12 +116,14 @@ end
 function DrawItems(items, offset)
     position = offset
     itemDisplay.clear()
+    requestBar.clear()
     itemDisplay.setCursorPos(1, 0)
     local i = 0
     for itemName, itemData in pairs(items) do
         i = i + 1
         if i > offset and itemName:lower():find(search) then
             local x, y = itemDisplay.getCursorPos()
+            requestBar.setCursorPos(1,y+1)
             itemDisplay.setCursorPos(1, y + 1)
             if itemData.maxDamage ~= 0 then
                 itemName = itemName .." (" .. math.floor((itemData.maxDamage - itemData.damage[1]) / itemData.maxDamage * 100) .. "%)"
@@ -130,6 +132,7 @@ function DrawItems(items, offset)
                 itemName = " " .. itemName
             end
             itemDisplay.write(itemData.count .. " " .. itemName)
+            requestBar.write("+")
         end
     end
 end
