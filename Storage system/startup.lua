@@ -59,13 +59,13 @@ end
 
 function storeItem()
     for _, chest in pairs(storage) do
-        local hasItems = false
         for slot = 1, peripheral.wrap(input_inventory).size() do
+            if #peripheral.wrap(input_inventory).list() < 1 then
+                return
+            end
             if addItem(peripheral.wrap(input_inventory).getItemMeta(slot), chest, slot) then
                 hasItems = true
                 chest["peripheral"].pullItems(input_inventory, slot, peripheral.wrap(input_inventory).size() * 64)
-            elseif slot = peripheral.wrap(input_inventory).size() and not hasItems then
-                return
             end
         end
     end
@@ -87,10 +87,10 @@ function addItem(item, chest, slot)
         items[item.displayName]["count"] = items[item.displayName]["count"] + item.count
         items[item.displayName][chest.id][slot] = item.count
         table.insert(items[item.displayName]["damage"], item.damage)
+        table.sort(items)
     else
         return false
     end
-    table.sort(items)
 end
 
 function getItem(item, count)
@@ -160,7 +160,7 @@ topBar.write(usedSlots .. "/" .. slotCount .. " Slots Used")
 
 while true do
     DrawItems(items, position)
-    event, x, y, key = os.pullEvent()
+    event, _, x, y, key = os.pullEvent()
     storeItem()
 
     if event == "monitor_touch" then
