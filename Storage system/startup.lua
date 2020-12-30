@@ -84,19 +84,25 @@ function itemName(item)
     return itemCache[item.name.. ":" .. item.damage]
 end
 
-function addItem(inventory, chest)
+function addItem(inventory, chest, pull)
     local updated = false
     if chest ~= nil and inventory ~= nil then
         for slot, item in pairs(inventory) do 
+            if pull and not chest.pullItem(input_inventory,slot,64) > 0 then
+                return false
+            end
+            
             if not itemName(item) then
                 updated = true
                 itemCache[item.name.. ":" .. item.damage] = chest["peripheral"].getItemMeta(slot).displayName
                 print("Found new item: "..itemName(item)..". Adding to local cache..")
             end
+            
             if items[itemName(item)] == nil then 
                 items[itemName(item)] = {}
                 items[itemName(item)]["count"] = 0
             end
+
             if items[itemName(item)][chest.id] == nil then
                 items[itemName(item)][chest.id] = {}
             end
@@ -105,13 +111,12 @@ function addItem(inventory, chest)
             items[itemName(item)][chest.id][slot] = item.count
             items[itemName(item)]["damage"] = item.damage
             table.sort(items)
-
-
         end
     end
     if updated then
         serialize(itemCache, "itemCache")
     end
+    return true
 end
 
 function getItem(item, count)
@@ -152,7 +157,6 @@ function DrawItems(items, offset)
         i = i + 1
         if i > offset and itemId:lower():find(search) then
             drawnItems[i-offset] = itemId
-            itemId = itemCache[itemId.. ":" .. itemData.damage]
             local x, y = itemDisplay.getCursorPos()
             requestBar.setCursorPos(1,y+1)
             itemDisplay.setCursorPos(1, y + 1)
@@ -179,7 +183,10 @@ function storeItem()
         if #inventory > 0 then
             print("Items found, storing...")
             for _, chest in pairs(storage) do
-                addItem(inventory, chest)
+                if addItem(inventory, chest, true) then
+                    addItems()
+                    break
+                end
             end
         end
     end
