@@ -1,6 +1,20 @@
+--[[
+Todo:
+User learnt recipes
+    Crafting
+    Smelting/Machine processing
+        Furnace:
+            Slot 1 > Input
+            Slot 2 > Fuel
+            Slot 3 > Output
+    Chain autocrafting
+
+User friendly output/input chest determining
+]]
+
+
 local output_inventory = "quark:quark_chest_1630"
 local input_inventory = "minecraft:ironchest_iron_2052"
-
 
 local storage = {} -- Chests and IDs
 local items = {}   -- Stored items in chests
@@ -9,48 +23,56 @@ local itemCache = {}  -- Non internal names of items
 local position = 0  -- Position of the scroll
 local search = ""  -- Search bar 
 
-local mon = peripheral.wrap("top")
+local mon = (peripheral.find("monitor") or term)  -- Get the display
 local inv = peripheral.wrap(input_inventory)
 
-local width, height = mon.getSize()
+local width, height = mon.getSize()  -- Get monitor dimensions
 local itemDisplay = window.create(mon, 3, 2, width - 4, height - 2)
-local topBar = window.create(mon, 1, 1, width, 1)
-local sideBar = window.create(mon, width - 1, 2, width - 4, height)
-local searchBar = window.create(mon, 3, height, width - 4, 1)
-local requestBar = window.create(mon, 1, 2, 2, height-2)
 
-local _ = {}
-for k, v in pairs(keys) do
-    _[v] = k
-end
-keys = _
+---------------------------------------------------------------------
+local topBar = window.create(mon, 1, 1, width, 1)                  --
+local sideBar = window.create(mon, width - 1, 2, width - 4, height)--  Create windows
+local searchBar = window.create(mon, 3, height, width - 4, 1)      --
+local requestBar = window.create(mon, 1, 2, 2, height-2)           --
+---------------------------------------------------------------------
 
-mon.setBackgroundColor(colors.lightGray)
-mon.clear()
+----------------------------
+local _ = {}              --
+for k, v in pairs(keys) do-- Invert computercraft's key table
+    _[v] = k              --
+end                       --
+keys = _                  --
+----------------------------
 
-topBar.setBackgroundColor(colors.black)
-topBar.clear()
+--------------------------------------------------
+mon.setBackgroundColor(colors.lightGray)        --
+mon.clear()                                     --
+                                                --
+topBar.setBackgroundColor(colors.black)         --
+topBar.clear()                                  --
+                                                --
+requestBar.setBackgroundColor(colors.lightGray) --
+requestBar.clear()                              --
+                                                --  Create the windows content
+sideBar.setBackgroundColor(colors.lightGray)    --
+sideBar.clear()                                 --
+sideBar.setCursorPos(1, height - 1)             --
+sideBar.write("\\/")                            --
+sideBar.setCursorPos(1, height - 4)             --
+sideBar.write("/\\")                            --
+sideBar.setCursorPos(1, height - 7)             --
+sideBar.write("RE")                             --
+                                                --
+itemDisplay.setBackgroundColor(colors.white)    --
+itemDisplay.setTextColor(colors.black)          --
+itemDisplay.clear()                             --
+                                                --
+searchBar.setBackgroundColor(colors.lightBlue)  --
+searchBar.clear()                               --
+--------------------------------------------------
 
-requestBar.setBackgroundColor(colors.lightGray)
-requestBar.clear()
 
-sideBar.setBackgroundColor(colors.lightGray) -- width-2, top = 0 & bottom = height
-sideBar.clear()
-sideBar.setCursorPos(1, height - 1)
-sideBar.write("\\/")
-sideBar.setCursorPos(1, height - 4)
-sideBar.write("/\\")
-sideBar.setCursorPos(1, height - 7)
-sideBar.write("RE")
-
-itemDisplay.setBackgroundColor(colors.white)
-itemDisplay.setTextColor(colors.black)
-itemDisplay.clear()
-
-searchBar.setBackgroundColor(colors.lightBlue)
-searchBar.clear()
-
-function serialize(data, name)
+function serialize(data, name)  -- Store data
     if not fs.exists('/data') then
         fs.makeDir('/data')
     end
@@ -59,7 +81,7 @@ function serialize(data, name)
     f.close()
 end
  
-function unserialize(name)
+function unserialize(name)  -- Get data
     if fs.exists('/data/'..name) then
         local f = fs.open('/data/'..name, 'r')
         data = textutils.unserialize(f.readAll())
@@ -71,7 +93,7 @@ end
 itemCache = unserialize("itemCache") or {}
 
 
-function seekChests()
+function seekChests()  -- Find attached chests
     storage = {}
     for k, v in pairs(peripheral.getNames()) do
         if v:match("chest") and not v:match(output_inventory) then
@@ -80,11 +102,11 @@ function seekChests()
     end
 end
 
-function itemName(item)
+function itemName(item)  --Get an item's displayName
     return itemCache[item.name.. ":" .. item.damage]
 end
 
-function addItem(inventory, chest, pull)
+function addItem(inventory, chest, pull)  -- Add an item to the list of items we have
     local updated = false
     if chest ~= nil and inventory ~= nil then
         for slot, item in pairs(inventory) do 
@@ -119,7 +141,7 @@ function addItem(inventory, chest, pull)
     return true
 end
 
-function getItem(item, count)
+function getItem(item, count)   -- Put an item in the output chest
     if not item then return end
     for key,value in pairs(items[item]) do
         if type(key) == "number" then
@@ -138,7 +160,7 @@ function getItem(item, count)
     end
 end
 
-function addItems()
+function addItems() -- Scan all chests for items
     itemDisplay.clear()
     items = {}
     for _, chest in pairs(storage) do
@@ -146,7 +168,7 @@ function addItems()
     end
 end
 
-function DrawItems(items, offset)
+function DrawItems(items, offset)  -- Draw items on screen
     drawnItems = {}
     position = offset
     itemDisplay.clear()
@@ -178,7 +200,7 @@ topBar.clear()
 topBar.setCursorPos(1, 1)
 topBar.write("Made by Folfy Blue")
 
-function storeItem()
+function storeItem()  --Add items from input chest
     while true do
         sleep(10)
         local inventory = inv.list()
@@ -194,7 +216,7 @@ function storeItem()
     end
 end
 
-function eventHandler()
+function eventHandler()  -- Handle key presses and monitor touches
     while true do
         if position < 0 then position = 0 end
         DrawItems(items, position)
