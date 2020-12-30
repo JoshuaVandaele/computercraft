@@ -6,6 +6,7 @@ local storage = {}
 local i = 0
 local position = 0
 local search = ""
+local inv = peripheral.wrap(input_inventory)
 
 local width, height = mon.getSize()
 local itemDisplay = window.create(mon, 3, 2, width - 4, height - 2)
@@ -147,8 +148,8 @@ topBar.setCursorPos(1, 1)
 topBar.write(usedSlots .. "/" .. slotCount .. " Slots Used")
 
 function storeItem()
-    inv = inv
     while true do
+        sleep(1)
         if #inv.list() > 1 then
             local itemslots
             print("Items found, storing...")
@@ -170,7 +171,8 @@ function eventHandler()
     while true do
         if position < 0 then position = 0 end
         DrawItems(items, position)
-        event, key, x, y = os.pullEvent()
+        sleep(1)
+        local event, key, x, y = os.pullEvent()
         print(event)
         if event == "monitor_touch" then
             print("Monitor touched at "..x.."/"..y)
