@@ -153,10 +153,12 @@ function DrawItems(items, offset)
     requestBar.clear()
     itemDisplay.setCursorPos(1, 0)
     local i = 0
+    local j = 0
     for itemId, itemData in pairs(items) do
         i = i + 1
-        if i > offset and itemId:lower():find(search) then
-            drawnItems[i-offset] = itemId
+        if i > offset and itemId:lower():find(search) and itemData.count > 0 then
+            j = j+1
+            drawnItems[j] = itemId
             local x, y = itemDisplay.getCursorPos()
             requestBar.setCursorPos(1,y+1)
             itemDisplay.setCursorPos(1, y + 1)
@@ -214,6 +216,8 @@ function eventHandler()
             end
 
             if x <= 2 then
+                print(drawnItems[y-1])
+                print(y)
                 getItem(drawnItems[y-1],64)
             end
 
