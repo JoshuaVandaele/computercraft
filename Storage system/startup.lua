@@ -88,7 +88,7 @@ function addItem(inventory, chest, pull)
     local updated = false
     if chest ~= nil and inventory ~= nil then
         for slot, item in pairs(inventory) do 
-            if pull and not chest.pullItem(input_inventory,slot,64) > 0 then
+            if pull and not (chest["peripheral"].pullItems(input_inventory,slot,64) > 0) then
                 return false
             end
             
@@ -197,7 +197,6 @@ function eventHandler()
         if position < 0 then position = 0 end
         DrawItems(items, position)
         local event, key, x, y = os.pullEvent()
-        print(event)
         if event == "monitor_touch" then
             print("Monitor touched at "..x.."/"..y)
             if x >= width - 2 then
