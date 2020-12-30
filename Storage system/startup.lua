@@ -1,11 +1,15 @@
 local output_inventory = "quark:quark_chest_1630"
 local input_inventory = "minecraft:ironchest_iron_2052"
 
+
+local storage = {} -- Chests and IDs
+local items = {}   -- Stored items in chests
+local drawnItems = {}  -- Position of items on screen
+local itemCache = {}  -- Non internal names of items
+local position = 0  -- Position of the scroll
+local search = ""  -- Search bar 
+
 local mon = peripheral.wrap("top")
-local storage = {}
-local i = 0
-local position = 0
-local search = ""
 local inv = peripheral.wrap(input_inventory)
 
 local width, height = mon.getSize()
@@ -14,9 +18,6 @@ local topBar = window.create(mon, 1, 1, width, 1)
 local sideBar = window.create(mon, width - 1, 2, width - 4, height)
 local searchBar = window.create(mon, 3, height, width - 4, 1)
 local requestBar = window.create(mon, 1, 2, 2, height-2)
-local items = {}
-local request = {}
-local drawnItems = {}
 
 local _ = {}
 for k, v in pairs(keys) do
@@ -49,6 +50,27 @@ itemDisplay.clear()
 searchBar.setBackgroundColor(colors.lightBlue)
 searchBar.clear()
 
+function serialize(data, name)
+    if not fs.exists('/data') then
+        fs.makeDir('/data')
+    end
+    local f = fs.open('/data/'..name, 'w')
+    f.write(textutils.serialize(data))
+    f.close()
+end
+ 
+function unserialize(name)
+    if fs.exists('/data/'..name) then
+        local f = fs.open('/data/'..name, 'r')
+        data = textutils.unserialize(f.readAll())
+        f.close()
+    end
+    return data
+end
+
+itemCache = unserialize("itemCache")
+
+
 function seekChests()
     storage = {}
     for k, v in pairs(peripheral.getNames()) do
@@ -58,9 +80,14 @@ function seekChests()
     end
 end
 
+function itemName(item)
+    return itemCache[item.name.. ":" .. item.damage]
+end
+
 function addItem(inventory, chest)
+    local updated = false
     if chest ~= nil and inventory ~= nil then
-        for slot, item in inventory do 
+        for slot, item in pairs(inventory) do 
             if items[item.name] == nil then 
                 items[item.name] = {}
                 items[item.name]["damage"] = {}
@@ -74,10 +101,16 @@ function addItem(inventory, chest)
             items[item.name][chest.id][slot] = item.count
             table.insert(items[item.name]["damage"], item.damage)
             table.sort(items)
+
+            if not itemName[item] then
+                updated = true
+                itemCache[item.name.. ":" .. item.damage] = chest["peripheral"].getItemMeta(slot).displayName
+                print("Found new item: "..itemName[item]..". Adding to local cache..")
+            end
         end
-        return true
-    else
-        return false
+    end
+    if updated then
+        serialize(itemCache, "itemCache")
     end
 end
 
@@ -124,13 +157,10 @@ function DrawItems(items, offset)
             local x, y = itemDisplay.getCursorPos()
             requestBar.setCursorPos(1,y+1)
             itemDisplay.setCursorPos(1, y + 1)
-            if itemData.maxDamage ~= 0 then
-                itemName = itemName .." (" .. math.floor((itemData.maxDamage - itemData.damage[1]) / itemData.maxDamage * 100) .. "%)"
-            end
             if itemData.count < 10 then
                 itemName = " " .. itemName
             end
-            itemDisplay.write(itemData.count .. " " .. itemName)
+            itemDisplay.write(itemData.count .. " " .. itemCache[itemName.. ":" .. itemData.damage])
             requestBar.write(" +")
         end
     end
@@ -149,7 +179,9 @@ function storeItem()
         local inventory = inv.list()
         if #inventory > 0 then
             print("Items found, storing...")
-            addItem(inventory, chest)
+            for _, chest in pairs(storage) do
+                addItem(inventory, chest)
+            end
         end
     end
 end
