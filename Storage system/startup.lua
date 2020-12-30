@@ -149,17 +149,18 @@ function DrawItems(items, offset)
     requestBar.clear()
     itemDisplay.setCursorPos(1, 0)
     local i = 0
-    for itemName, itemData in pairs(items) do
+    for itemId, itemData in pairs(items) do
         i = i + 1
-        if i > offset and itemName:lower():find(search) then
-            drawnItems[i-offset] = itemName
+        itemId = itemCache[itemId.. ":" .. itemData.damage]
+        if i > offset and itemId:lower():find(search) then
+            drawnItems[i-offset] = itemId
             local x, y = itemDisplay.getCursorPos()
             requestBar.setCursorPos(1,y+1)
             itemDisplay.setCursorPos(1, y + 1)
             if itemData.count < 10 then
-                itemName = " " .. itemName
+                itemId = " " .. itemId
             end
-            itemDisplay.write(itemData.count .. " " .. itemCache[itemName.. ":" .. itemData.damage])
+            itemDisplay.write(itemData.count .. " " .. itemId)
             requestBar.write(" +")
         end
     end
