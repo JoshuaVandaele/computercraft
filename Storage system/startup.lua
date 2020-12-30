@@ -58,23 +58,23 @@ function seekChests()
     end
 end
 
-function addItem(item, chest, slot)
-    if item ~= nil then
-        usedSlots = usedSlots + 1
-        if items[item.displayName] == nil then 
-            items[item.displayName] = {}
-            items[item.displayName]["damage"] = {}
-            items[item.displayName]["count"] = 0
-        end
-        if items[item.displayName][chest.id] == nil then
-            items[item.displayName][chest.id] = {}
-        end
+function addItem(inventory, chest)
+    if chest ~= nil and inventory ~= nil then
+        for slot, item in inventory do 
+            if items[item.name] == nil then 
+                items[item.name] = {}
+                items[item.name]["damage"] = {}
+                items[item.name]["count"] = 0
+            end
+            if items[item.name][chest.id] == nil then
+                items[item.name][chest.id] = {}
+            end
 
-        items[item.displayName]["maxDamage"] = item.maxDamage
-        items[item.displayName]["count"] = items[item.displayName]["count"] + item.count
-        items[item.displayName][chest.id][slot] = item.count
-        table.insert(items[item.displayName]["damage"], item.damage)
-        table.sort(items)
+            items[item.name]["count"] = items[item.name]["count"] + item.count
+            items[item.name][chest.id][slot] = item.count
+            table.insert(items[item.name]["damage"], item.damage)
+            table.sort(items)
+        end
         return true
     else
         return false
@@ -106,12 +106,8 @@ function addItems()
     slotCount = 0
     usedSlots = 0
     for _, chest in pairs(storage) do
-        for slot = 1, chest["peripheral"].size() do
-            slotCount = slotCount + 1
-            addItem(chest["peripheral"].getItemMeta(slot),chest,slot)
-        end
+        addItem(chest["peripheral"].list(),chest)
     end
-    return items, slotCount, usedSlots
 end
 
 function DrawItems(items, offset)
@@ -150,19 +146,10 @@ topBar.write(usedSlots .. "/" .. slotCount .. " Slots Used")
 function storeItem()
     while true do
         sleep(10)
-        if #inv.list() > 1 then
-            local itemslots
+        local inventory = inv.list()
+        if #inventory > 0 then
             print("Items found, storing...")
-            for _, chest in pairs(storage) do
-                for slot = 1,(itemslots or inv.size())  do
-                    print("Checking slot "..slot)
-                    if addItem(inv.getItemMeta(slot), chest, slot) then
-                        itemslots = (itemslots or 0)+1
-                        print("Storing "..inv.getItemMeta(slot).displayName.." in chest "..chest["id"])
-                        chest["peripheral"].pullItems(input_inventory, slot, inv.size() * 64)
-                    end
-                end
-            end
+            addItem(inventory, chest)
         end
     end
 end
