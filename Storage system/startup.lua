@@ -88,24 +88,25 @@ function addItem(inventory, chest)
     local updated = false
     if chest ~= nil and inventory ~= nil then
         for slot, item in pairs(inventory) do 
-            if items[item.name] == nil then 
-                items[item.name] = {}
-                items[item.name]["count"] = 0
-            end
-            if items[item.name][chest.id] == nil then
-                items[item.name][chest.id] = {}
-            end
-
-            items[item.name]["count"] = items[item.name]["count"] + item.count
-            items[item.name][chest.id][slot] = item.count
-            items[item.name]["damage"] = item.damage
-            table.sort(items)
-
             if not itemName(item) then
                 updated = true
                 itemCache[item.name.. ":" .. item.damage] = chest["peripheral"].getItemMeta(slot).displayName
                 print("Found new item: "..itemName(item)..". Adding to local cache..")
             end
+            if items[itemName(item)] == nil then 
+                items[itemName(item)] = {}
+                items[itemName(item)]["count"] = 0
+            end
+            if items[itemName(item)][chest.id] == nil then
+                items[itemName(item)][chest.id] = {}
+            end
+
+            items[itemName(item)]["count"] = items[itemName(item)]["count"] + item.count
+            items[itemName(item)][chest.id][slot] = item.count
+            items[itemName(item)]["damage"] = item.damage
+            table.sort(items)
+
+
         end
     end
     if updated then
