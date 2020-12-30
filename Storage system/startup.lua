@@ -1,5 +1,6 @@
 --[[
 Todo:
+Multiple in/out
 User learnt recipes
     Crafting
     Smelting/Machine processing
@@ -12,6 +13,7 @@ User learnt recipes
 User friendly output/input chest determining
 ]]
 
+local debug = false
 
 local output_inventory = "quark:quark_chest_1630"
 local input_inventory = "minecraft:ironchest_iron_2052"
@@ -23,7 +25,7 @@ local itemCache = {}  -- Non internal names of items
 local position = 0  -- Position of the scroll
 local search = ""  -- Search bar 
 
-local mon = (peripheral.find("monitor") or term)  -- Get the display
+local mon = (peripheral.find("monitor") or term.current())  -- Get the display
 local inv = peripheral.wrap(input_inventory)
 
 local width, height = mon.getSize()  -- Get monitor dimensions
@@ -71,6 +73,11 @@ searchBar.setBackgroundColor(colors.lightBlue)  --
 searchBar.clear()                               --
 --------------------------------------------------
 
+function logp(...)
+    if debug then
+        print(...)
+    end
+end
 
 function serialize(data, name)  -- Store data
     if not fs.exists('/data') then
@@ -117,7 +124,7 @@ function addItem(inventory, chest, pull)  -- Add an item to the list of items we
             if not itemName(item) then
                 updated = true
                 itemCache[item.name.. ":" .. item.damage] = chest["peripheral"].getItemMeta(slot).displayName
-                print("Found new item: "..itemName(item)..". Adding to local cache..")
+                logp("Found new item: "..itemName(item)..". Adding to local cache..")
             end
             
             if items[itemName(item)] == nil then 
@@ -205,7 +212,7 @@ function storeItem()  --Add items from input chest
         sleep(10)
         local inventory = inv.list()
         if #inventory > 0 then
-            print("Items found, storing...")
+            logp("Items found, storing...")
             for _, chest in pairs(storage) do
                 if addItem(inventory, chest, true) then
                     addItems()
@@ -221,32 +228,32 @@ function eventHandler()  -- Handle key presses and monitor touches
         if position < 0 then position = 0 end
         DrawItems(items, position)
         local event, key, x, y = os.pullEvent()
-        if event == "monitor_touch" then
-            print("Monitor touched at "..x.."/"..y)
+        if event == "monitor_touch" or event == "mouse_click" then
+            logp("Monitor touched at "..x.."/"..y)
             if x >= width - 2 then
                 if y >= height - 2 then --down
-                    print("\\/ Pressed")
+                    logp("\\/ Pressed")
                     position = position + 3
                 elseif y >= height - 5 then --up
                     position = position - 3
-                    print("/\\ Pressed")
+                    logp("/\\ Pressed")
                 elseif y >= height - 7 then --up
                     seekChests()
                     addItems()
-                    print("Refresh Pressed")
+                    logp("Refresh Pressed")
                 end  --x, y, width, height 1, 2, 2, height-2)
             end
 
             if x <= 2 then
-                print(drawnItems[y-1])
-                print(y)
+                logp(drawnItems[y-1])
+                logp(y)
                 getItem(drawnItems[y-1],64)
             end
 
         elseif event == "key" then
             position = 0
             key = keys[key] or ""
-            print("Key "..key.." pressed")
+            logp("Key "..key.." pressed")
             x, y = searchBar.getCursorPos()
             if key == "enter" then
                 search = ""
@@ -263,7 +270,7 @@ function eventHandler()  -- Handle key presses and monitor touches
                 key = ""
             end
             search = search .. key
-            print("Searching: "..search)
+            logp("Searching: "..search)
             searchBar.clear()
             searchBar.setCursorPos(1, 1)
             searchBar.write(search)
