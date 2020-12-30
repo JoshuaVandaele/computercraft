@@ -135,8 +135,6 @@ end
 function addItems()
     itemDisplay.clear()
     items = {}
-    slotCount = 0
-    usedSlots = 0
     for _, chest in pairs(storage) do
         addItem(chest["peripheral"].list(),chest)
     end
@@ -151,9 +149,9 @@ function DrawItems(items, offset)
     local i = 0
     for itemId, itemData in pairs(items) do
         i = i + 1
-        itemId = itemCache[itemId.. ":" .. itemData.damage]
         if i > offset and itemId:lower():find(search) then
             drawnItems[i-offset] = itemId
+            itemId = itemCache[itemId.. ":" .. itemData.damage]
             local x, y = itemDisplay.getCursorPos()
             requestBar.setCursorPos(1,y+1)
             itemDisplay.setCursorPos(1, y + 1)
@@ -171,7 +169,7 @@ addItems()
 
 topBar.clear()
 topBar.setCursorPos(1, 1)
-topBar.write(usedSlots .. "/" .. slotCount .. " Slots Used")
+topBar.write("Made by Folfy Blue")
 
 function storeItem()
     while true do
