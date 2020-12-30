@@ -68,7 +68,7 @@ function unserialize(name)
     return data
 end
 
-itemCache = unserialize("itemCache")
+itemCache = unserialize("itemCache") or {}
 
 
 function seekChests()
@@ -90,7 +90,6 @@ function addItem(inventory, chest)
         for slot, item in pairs(inventory) do 
             if items[item.name] == nil then 
                 items[item.name] = {}
-                items[item.name]["damage"] = {}
                 items[item.name]["count"] = 0
             end
             if items[item.name][chest.id] == nil then
@@ -99,13 +98,13 @@ function addItem(inventory, chest)
 
             items[item.name]["count"] = items[item.name]["count"] + item.count
             items[item.name][chest.id][slot] = item.count
-            table.insert(items[item.name]["damage"], item.damage)
+            items[item.name]["damage"] = item.damage
             table.sort(items)
 
-            if not itemName[item] then
+            if not itemName(item) then
                 updated = true
                 itemCache[item.name.. ":" .. item.damage] = chest["peripheral"].getItemMeta(slot).displayName
-                print("Found new item: "..itemName[item]..". Adding to local cache..")
+                print("Found new item: "..itemName(item)..". Adding to local cache..")
             end
         end
     end
