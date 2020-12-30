@@ -149,7 +149,7 @@ topBar.write(usedSlots .. "/" .. slotCount .. " Slots Used")
 
 function storeItem()
     while true do
-        sleep(1)
+        sleep(10)
         if #inv.list() > 1 then
             local itemslots
             print("Items found, storing...")
@@ -171,7 +171,6 @@ function eventHandler()
     while true do
         if position < 0 then position = 0 end
         DrawItems(items, position)
-        sleep(1)
         local event, key, x, y = os.pullEvent()
         print(event)
         if event == "monitor_touch" then
