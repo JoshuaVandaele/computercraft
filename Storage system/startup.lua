@@ -9,7 +9,8 @@ User learnt recipes
             Slot 2 > Fuel
             Slot 3 > Output
     Chain autocrafting
-
+        Minimum amount of item in storage, otherwise craft 
+Item folders
 User friendly output/input chest determining
 ]]
 
@@ -209,7 +210,7 @@ topBar.write("Made by Folfy Blue")
 
 function storeItem()  --Add items from input chest
     while true do
-        sleep(10)
+        sleep(1)
         local inventory = inv.list()
         if #inventory > 0 then
             logp("Items found, storing...")
