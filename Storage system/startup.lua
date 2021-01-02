@@ -14,7 +14,7 @@ Item folders
 User friendly output/input chest determining
 ]]
 
-local debug = false
+local debug = true
 
 local output_inventory = "quark:quark_chest_1630"
 local input_inventory = "minecraft:ironchest_iron_2052"
@@ -81,17 +81,20 @@ function logp(...)
 end
 
 function serialize(data, name)  -- Store data
-    if not fs.exists('/data') then
-        fs.makeDir('/data')
+    if not fs.exists('/disk') then
+        return
     end
-    local f = fs.open('/data/'..name, 'w')
+    if not fs.exists('/disk/data') then
+        fs.makeDir('/disk/data')
+    end
+    local f = fs.open('/disk/data/'..name, 'w')
     f.write(textutils.serialize(data))
     f.close()
 end
  
 function unserialize(name)  -- Get data
-    if fs.exists('/data/'..name) then
-        local f = fs.open('/data/'..name, 'r')
+    if fs.exists('/disk/data/'..name) then
+        local f = fs.open('/disk/data/'..name, 'r')
         data = textutils.unserialize(f.readAll())
         f.close()
     end
@@ -115,17 +118,18 @@ function itemName(item)  --Get an item's displayName
 end
 
 function addItem(inventory, chest, pull)  -- Add an item to the list of items we have
-    local updated = false
+    updated = false
     if chest ~= nil and inventory ~= nil then
-        for slot, item in pairs(inventory) do 
-            if pull and not (chest["peripheral"].pullItems(input_inventory,slot,64) > 0) then
-                return false
+        for slot, item in pairs(inventory) do
+            if pull then
+                local a = (chest["peripheral"].pullItems(input_inventory,slot,64) > 0)
             end
             
             if not itemName(item) then
                 updated = true
                 itemCache[item.name.. ":" .. item.damage] = chest["peripheral"].getItemMeta(slot).displayName
                 logp("Found new item: "..itemName(item)..". Adding to local cache..")
+                sleep(0.25)
             end
             
             if items[itemName(item)] == nil then 
@@ -140,13 +144,18 @@ function addItem(inventory, chest, pull)  -- Add an item to the list of items we
             items[itemName(item)]["count"] = items[itemName(item)]["count"] + item.count
             items[itemName(item)][chest.id][slot] = item.count
             items[itemName(item)]["damage"] = item.damage
-            table.sort(items)
+            if a then local b = true end
         end
     end
     if updated then
         serialize(itemCache, "itemCache")
     end
-    return true
+    table.sort(items)
+    if b or not pull then
+        return true
+    else
+        return false
+    end
 end
 
 function getItem(item, count)   -- Put an item in the output chest

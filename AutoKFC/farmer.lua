@@ -2,7 +2,7 @@ local finalAge = 3
 
 self = "turtle_3768"
 
-storage = "minecraft:ironchest_iron_2071"
+storage = "minecraft:ironchest_gold_458"
 storage = peripheral.wrap(storage)
 storageSlots = {
   ["minecraft:potato"] = 20,
