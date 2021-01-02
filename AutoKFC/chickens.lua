@@ -1,19 +1,18 @@
 self = "turtle_3773"
 
-storage = "minecraft:ironchest_iron_2071"
+storage = "minecraft:ironchest_gold_458"
 storage = peripheral.wrap(storage)
 storageSlots = {
   ["minecraft:egg"] = 33,
-  ["minecraft:chicken"] = 50,
+  ["minecraft:chicken"] = 68,
 }
 
 function store()
 	stored = 0
 	for i = 1,16 do
-		turtle.select(i)
-		local slot = turtle.getItemDetail()
+		local slot = turtle.getItemDetail(i)
 		if slot and storageSlots[slot.name] then
-			stored = stored+ storage.pullItems(self,i,64,storageSlots[slot.name])
+			stored = stored + storage.pullItems(self,i,64,storageSlots[slot.name])
 		end
 	end
 	return stored ~= 0
@@ -30,9 +29,7 @@ while true do
 	turtle.suckUp()
 	turtle.suck()
 
-	
-	turtle.select(1)
-	if turtle.getItemDetail() and not store() then
+	if not store() then
 		yeet()
 	end
 	while #peripheral.wrap("bottom").list() > 0 do
