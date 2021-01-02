@@ -7,6 +7,7 @@ storage = peripheral.wrap(storage)
 storageSlots = {
   ["minecraft:potato"] = 20,
   ["harvestcraft:spiceleafitem"] = 28,
+  ["harvestcraft:cornitem"] = 38,
 
 }
 local position = {["x"] = 0, ["y"] = 0, ["z"] = 0}
