@@ -22,7 +22,7 @@ while true do
   		local stop = false
 
   		for _,block in pairs(blocks) do
-  			if targets(block.name) then
+  			if targets[block.name] then
   				local x, y, z = block.x, block.y, block.z
 				yaw = math.deg(math.atan2(-x, z))
 				pitch = math.deg(-math.atan2(y, math.sqrt(x * x + z * z)))
