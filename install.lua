@@ -1,5 +1,13 @@
-local id = "1lgufu6Y_C_E6Y_3a4bt_RiVT_9P9pfRJ"
+-- pastebin get nAxHsL89 install.lua
 
-shell.run("wget https://docs.google.com/uc?export=download&id="..id.." tmp")
-shell.run("delete startup.lua")
-shell.run("rename tmp startup.lua")
+local request = http.get("https://api.github.com/repos/FolfyBlue/computercraft/git/trees/master?recursive=1")
+local contents = json.parse(request.readAll())
+request.close()
+
+for _, file in ipairs(contents.tree) do
+  local request = http.get("https://raw.githubusercontent.com/FolfyBlue/computercraft/master/" .. file.path)
+  local handle = fs.open(file.path, "w")
+  handle.write(request.readAll())
+  handle.close()
+  request.close()
+end 
