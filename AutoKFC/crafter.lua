@@ -39,6 +39,7 @@ local storageinvSlots = {
   ["harvestcraft:peppercornitem"] = 36,
   ["harvestcraft:blackpepperitem"] = 37,
   ["harvestcraft:cornitem"] = 38,
+  ["harvestcraft:cornmealitem"] = 39,
   
   ["harvestcraft:friesitem"] = 64,
   ["harvestcraft:mashedpotatoesitem"] = 65,
@@ -165,6 +166,13 @@ crafts.feast = {
 	[4] = "harvestcraft:mashedpotatoesitem", [5] = "harvestcraft:colasodaitem",
 
 	["output"] = "harvestcraft:friedfeastitem"
+}
+
+crafts.cornmeal = {
+	[1] = "harvestcraft:mortarandpestleitem", [2] = "harvestcraft:cornitem",
+
+
+	["output"] = "harvestcraft:cornmealitem"
 }
 
 local function scanInventory()
