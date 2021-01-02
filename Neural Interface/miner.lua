@@ -10,7 +10,7 @@ while true do
   		local blocks = ni.scan()
   		for _,block in pairs(blocks) do
   			for _,target in pairs(targets) do
-  				if block["name"] == target then
+  				if string.find(block["name"],target) then
   					local x, y, z = block.x, block.y, block.z
   					yaw = math.deg(math.atan2(-x, z))
   					pitch = math.deg(-math.atan2(y, math.sqrt(x * x + z * z)))
