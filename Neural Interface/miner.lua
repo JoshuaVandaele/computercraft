@@ -21,6 +21,6 @@ while true do
     	owner = ni.getMetaOwner()
     	yaw,pitch = owner.yaw,owner.pitch
     end
-    ni.fire(yaw,pitch,1)
+    ni.fire(yaw,pitch,2)
   end
 end
