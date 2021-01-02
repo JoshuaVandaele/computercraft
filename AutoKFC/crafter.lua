@@ -38,6 +38,7 @@ local storageinvSlots = {
   ["harvestcraft:oliveoilitem"] = 35,
   ["harvestcraft:peppercornitem"] = 36,
   ["harvestcraft:blackpepperitem"] = 37,
+  ["harvestcraft:cornitem"] = 38,
   
   ["harvestcraft:friesitem"] = 64,
   ["harvestcraft:mashedpotatoesitem"] = 65,
