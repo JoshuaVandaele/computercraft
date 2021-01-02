@@ -11,7 +11,7 @@ while true do
   		local stop = false
   		for _,block in pairs(blocks) do
   			for _,target in pairs(targets) do
-  				if string.match(block["name"],target) then
+  				if block["name"] == target then
   					local x, y, z = block.x, block.y, block.z
   					yaw = math.deg(math.atan2(-x, z))
   					pitch = math.deg(-math.atan2(y, math.sqrt(x * x + z * z)))
