@@ -125,7 +125,7 @@ while true do
 			end
 		end
 		while turtle.getFuelLevel() < farmwidth*farmheight*2 do
-			sleep(10)
+			sleep(120)
 			refuel()
 		end
 		while position.y ~= 1 do
@@ -135,8 +135,6 @@ while true do
 		while position.x ~= 1 do
 			if forward() then
 				farm()
-			else
-				refuel()
 			end
 		end
 
@@ -150,8 +148,6 @@ while true do
 			while position.x ~= xpos do
 				if forward() then
 					farm()
-				else
-					refuel()
 				end
 			end
 
@@ -164,8 +160,6 @@ while true do
 			while position.z ~= i do
 				if forward() then
 					farm()
-				else
-					refuel()
 				end
 			end
 
@@ -179,24 +173,18 @@ while true do
 		while position.z ~= 0 do
 			if forward() then
 				farm()
-			else
-				refuel()
 			end
 		end
 		turnL()
 		while position.x ~= 0 do
 			if forward() then
 				farm()
-			else
-				refuel()
 			end
 		end
 		
 		while position.y ~= 0 do
 			if down() then
 				farm()
-			else
-				refuel()
 			end
 		end
 		turnL()
