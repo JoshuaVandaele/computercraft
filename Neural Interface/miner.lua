@@ -4,9 +4,9 @@ local targets = {...}
 
 while true do
   holding = ni.getEquipment().list()[1]
-  if holding and holding.name == trigger then
+  if holding and holding.name == trigger or trigger == "" then
   	local yaw,pitch
-  	if #{...}>0 then
+  	if #targets>0 then
   		local blocks = ni.scan()
   		for _,block in pairs(blocks) do
   			for _,target in pairs(targets) do
