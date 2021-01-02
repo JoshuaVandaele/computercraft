@@ -1,11 +1,11 @@
-self = "turtle_3750"
+local self = "turtle_3750"
 
-storage = "minecraft:ironchest_gold_458"
+local storage = "minecraft:ironchest_gold_458"
 
-storageinv = peripheral.wrap(storage)
-craftSlot = {1,2,3,5,6,7,9,10,11}
-crafts = {}
-storageinvSlots = {
+local storageinv = peripheral.wrap(storage)
+local craftSlot = {1,2,3,5,6,7,9,10,11}
+local crafts = {}
+local storageinvSlots = {
   ["harvestcraft:potitem"] = 1,
   ["harvestcraft:bakewareitem"] = 2,
   ["harvestcraft:cuttingboarditem"] = 3,
@@ -39,13 +39,13 @@ storageinvSlots = {
   ["harvestcraft:peppercornitem"] = 36,
   ["harvestcraft:blackpepperitem"] = 37,
   
-  ["harvestcraft:friesitem"] = 46,
-  ["harvestcraft:mashedpotatoesitem"] = 47,
-  ["harvestcraft:butteredpotatoitem"] = 48,
-  ["harvestcraft:colasodaitem"] = 49,
-  ["minecraft:chicken"] = 50,
-  ["harvestcraft:friedchickenitem"] = 51,
-  ["harvestcraft:friedfeastitem"] = 54,
+  ["harvestcraft:friesitem"] = 64,
+  ["harvestcraft:mashedpotatoesitem"] = 65,
+  ["harvestcraft:butteredpotatoitem"] = 66,
+  ["harvestcraft:colasodaitem"] = 67,
+  ["minecraft:chicken"] = 68,
+  ["harvestcraft:friedchickenitem"] = 69,
+  ["harvestcraft:friedfeastitem"] = 70,
   
 }
 
@@ -166,7 +166,7 @@ crafts.feast = {
 	["output"] = "harvestcraft:friedfeastitem"
 }
 
-function scanInventory()
+local function scanInventory()
 	local inventory = {}
 	for i = 1,16 do
 		inventory[i] = turtle.getItemDetail(i)
@@ -174,7 +174,7 @@ function scanInventory()
 	return inventory
 end
 
-function storeItems()
+local function storeItems()
 	local stored = scanInventory()
 	for slot,item in pairs(stored) do
 		if storageinvSlots[item.name] then
@@ -182,17 +182,17 @@ function storeItems()
 		end
 	end
 	local stored = scanInventory()
-	for _,_ in pairs(stored) do
+	for _,_ in pairs(stored) do -- I hate this, but #stored doesn't work because lua's stupid
 		print("Stocking overflowed items")
 		for i = 1,16 do
-			turtle.select(i)  -- I hate this, but #stored doesn't work because lua's stupid
+			turtle.select(i)  
 			turtle.dropUp()
 		end
 		break
 	end
 end
 
-function make(craft)
+local function make(craft)
 	local stored = storageinv.list()
 	if not stored or not craft then return end
 	if stored[ storageinvSlots[ craft["output"] ] ] and stored[ storageinvSlots[ craft["output"] ] ].count == 64 then
@@ -222,7 +222,7 @@ function make(craft)
 		end
 	end 
 
-	if #needs > 0 then
+	if needs ~= "" then
 		print("Missing items to make "..craft["output"]..", trying to make them..")
 		storeItems()
 		possible = false
@@ -260,7 +260,25 @@ function make(craft)
 	sleep(1)
 end
 
+local function sortChest()
+	local count = 1
+	while count ~= 0 do
+		count = 0
+		for slot, item in pairs(storageinv.list()) do
+			for sortedItem,sortedSlot in pairs(storageinvSlots) do
+				if item.name == sortedItem and slot ~= sortedSlot then
+					count = 1
+					storageinv.pushItems(self,slot,64,1)
+					storageinv.pullItems(self,1,64,sortedSlot)
+				end
+			end
+		end
+	end
+end
+
 storeItems()
+sortChest()
+
 while true do
   for k,v in pairs(crafts) do
   	print("===============")
