@@ -1,6 +1,6 @@
 self = "turtle_3767"
 
-storage = "minecraft:ironchest_iron_2071"
+storage = "minecraft:ironchest_gold_458"
  
 storage = peripheral.wrap(storage)
 storageSlots = {

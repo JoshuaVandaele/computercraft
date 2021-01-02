@@ -1,6 +1,6 @@
 self = "turtle_3750"
 
-storage = "minecraft:ironchest_iron_2071"
+storage = "minecraft:ironchest_gold_458"
 
 storageinv = peripheral.wrap(storage)
 craftSlot = {1,2,3,5,6,7,9,10,11}
@@ -36,14 +36,17 @@ storageinvSlots = {
   ["minecraft:egg"] = 33,
   ["harvestcraft:spiceleafseeditem"] = 34,
   ["harvestcraft:oliveoilitem"] = 35,
+  ["harvestcraft:peppercornitem"] = 36,
+  ["harvestcraft:blackpepperitem"] = 37,
   
   ["harvestcraft:friesitem"] = 46,
   ["harvestcraft:mashedpotatoesitem"] = 47,
   ["harvestcraft:butteredpotatoitem"] = 48,
   ["harvestcraft:colasodaitem"] = 49,
   ["minecraft:chicken"] = 50,
+  ["harvestcraft:friedchickenitem"] = 51,
+  ["harvestcraft:friedfeastitem"] = 54,
   
-
 }
 
 crafts.salt = {
@@ -140,6 +143,27 @@ crafts.oil = {
 	[1] = "harvestcraft:juiceritem", [2] = "harvestcraft:spiceleafseeditem", [3] = "harvestcraft:spiceleafseeditem",
 
 	["output"] = 'harvestcraft:oliveoilitem'
+}
+
+crafts.pepper = {
+	[1] = "harvestcraft:mortarandpestleitem", [2] = "harvestcraft:peppercornitem",
+
+
+	["output"] = "harvestcraft:blackpepperitem"
+}
+
+crafts.kfcbucket = {
+	[1] = "harvestcraft:potitem", [2] = "minecraft:chicken", [3] = "harvestcraft:batteritem", 
+	[4] = "harvestcraft:spiceleafitem", [5] = "harvestcraft:blackpepperitem", [6] = "harvestcraft:oliveoilitem",
+
+	["output"] = "harvestcraft:friedchickenitem" 
+}
+
+crafts.feast = {
+	[1] = "harvestcraft:cuttingboarditem", [2] = "harvestcraft:friedchickenitem", [3] = "harvestcraft:friesitem",
+	[4] = "harvestcraft:mashedpotatoesitem", [5] = "harvestcraft:colasodaitem",
+
+	["output"] = "harvestcraft:friedfeastitem"
 }
 
 function scanInventory()
