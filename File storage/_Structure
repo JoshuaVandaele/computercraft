@@ -1,25 +1,21 @@
 drive = {
-	["1"] = {
-		["blocks"] = {
-			[1] = false,
-			[2] = false,
-			...
-		}
+	["1"] = "1"
 	},
-	["2"] = {
-		["blocks"] = {
-			[1] = true,
-			[2] = true,
-			...
-		}
+	["2"] = "2"
 	},
 
 }
 
 blocks = {
-	["examplefile"] = {
+	["startup.lua"] = {
 		[1] = {4,5},
 		[2] = {1,2}
 	}
 }
 
+{
+		["blocks"] = {
+			[1] = true,
+			[2] = true,
+			...
+		}
