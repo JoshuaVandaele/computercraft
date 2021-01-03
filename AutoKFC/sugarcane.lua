@@ -5,8 +5,8 @@ storage = peripheral.wrap(storage)
 storageSlots = {
   ["minecraft:reeds"] = 29,
 }
-local position = {["x"] = 0, ["y"] = 0, ["z"] = 0}
-local rotation = 0
+local position = unserialize("pos") or {["x"] = 0, ["y"] = 0, ["z"] = 0}
+local rotation = unserialize("rotation") or 0
 
 local farmwidth = 20
 local farmheight = 3
@@ -49,6 +49,7 @@ function forward(x)
 			elseif rotation == 3 then
 				position.z = position.z-1
 			end
+			serialize(position,"pos")
 		else
 			return false
 		end
@@ -61,6 +62,7 @@ function turnR(x)
 	for i = 1,x do
 		if turtle.turnRight() then
 			rotation = rotation + 1
+			serialize(rotation,"rotation")
 		else
 			return false
 		end
@@ -73,6 +75,7 @@ function turnL(x)
 	for i = 1,x do
 		if turtle.turnLeft() then
 			rotation = rotation - 1
+			serialize(rotation,"rotation")
 		else
 			return false
 		end
@@ -96,6 +99,49 @@ function farm()
 	_, inspect = turtle.inspectDown()
 	if _ and inspect.name == "minecraft:reeds" then
 		turtle.digDown()
+	end
+end
+
+function serialize(data, name)  -- Store data
+    if not fs.exists('/disk') then
+        return
+    end
+    if not fs.exists('/.data') then
+        fs.makeDir('/.data')
+    end
+    local f = fs.open('/.data/'..name, 'w')
+    f.write(textutils.serialize(data))
+    f.close()
+end
+ 
+function unserialize(name)  -- Get data
+    if fs.exists('/.data/'..name) then
+        local f = fs.open('/.data/'..name, 'r')
+        data = textutils.unserialize(f.readAll())
+        f.close()
+    end
+    return data
+end
+
+if position.x  ~= position.y and position.x ~= position.z and position.x~= 0 then
+	while rotation ~= 2 do
+		turnR()
+	end
+	while position.x ~= 0 do
+		if not forward() then
+			dig()
+		end
+	end
+	while rotation ~= 3 do
+		turnR()
+	end
+	while position.z ~= 0 do
+		if not forward() then
+			dig()
+		end
+	end
+	while rotation ~= 0 do
+		turnR()
 	end
 end
 

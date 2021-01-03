@@ -1,6 +1,6 @@
 local neural = peripheral.wrap("back")
 local canvas = neural.canvas3d()
-local trigger = "minecraft:wooden_pickaxe"
+local trigger = ""
 
 local args = {...}
 if #args>0 then
@@ -55,8 +55,9 @@ function shoot()
 end
 
 while true do
-  holding = ni.getEquipment().list()[1]
-  if holding and holding.name == trigger then
+  holding = neural.getEquipment().list()[1]
+  if holding and holding.name == trigger or trigger == "" then
     pcall(shoot)
+    sleep(0)
   end
 end
