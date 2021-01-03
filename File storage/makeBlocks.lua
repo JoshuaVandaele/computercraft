@@ -1,12 +1,17 @@
 drives = {}
 blocksize = 200 -- blocksize, in b
 
+
+
+
 local function serialize(data, name)  -- Store data
     if not fs.exists('/.data/') then
         fs.makeDir("/.data/")
     end
+    data = textutils.serialize(data)
+    sleep(0.2)
     local f = fs.open('/.data/'..name, 'w')
-    f.write(textutils.serialize(data))
+    f.write(data)
     f.close()
 end
 
@@ -31,4 +36,4 @@ local function seekDrives()
 end
 
 seekDrives()
-serialize(drives)
+serialize(drives,"drives")
