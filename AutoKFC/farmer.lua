@@ -2,8 +2,9 @@ local finalAge = 3
 
 self = "turtle_3768"
 
-local storage,storageSlots = dofile("disk/storage.lua")
+local storage,storageSlots,trash = dofile("disk/storage.lua")
 storage = peripheral.wrap(storage)
+trash = peripheral.wrap(trash)
 
 local position = {["x"] = 0, ["y"] = 0, ["z"] = 0}
 local rotation = 0
@@ -88,10 +89,10 @@ function refuel()
 	end
 end
 
-function farm()
+function farm(force)
 	crop, inspect = turtle.inspectDown()
 	turtle.select(1)
-	if crop and inspect["state"].age == finalAge then
+	if crop and inspect["state"].age == finalAge or force then
 		turtle.digDown()
 		if turtle.craft then
 			turtle.select(16)
@@ -108,17 +109,17 @@ function farm()
 	end
 end
 
+function trashItems()
+	for i = 1,16 do
+		trash.pullItems(self,i,64)
+	end
+end
+
 while true do
 	crop, inspect = turtle.inspect()
-	if not crop or inspect["state"].age == finalAge or debug then 
+	if not crop or inspect["state"].age >= math.ceil(finalAge/2) or debug then 
 		refuel()
-		for i = 1,16 do
-			turtle.select(i)
-			local slot = turtle.getItemDetail()
-			if slot and crop then
-				turtle.dropDown(64)
-			end
-		end
+		trashItems()
 		while turtle.getFuelLevel() < farmwidth*farmheight*2 do
 			sleep(120)
 			refuel()
@@ -129,7 +130,7 @@ while true do
 
 		while position.x ~= 1 do
 			if forward() then
-				farm()
+				farm(true)
 			end
 		end
 
@@ -193,5 +194,6 @@ while true do
 		end
 	end
 	sleep(60)
+	
 end
 

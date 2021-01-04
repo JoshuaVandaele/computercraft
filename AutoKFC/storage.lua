@@ -1,4 +1,5 @@
 local storageChest = "minecraft:ironchest_diamond_6877"
+local trashChest = "minecraft:ender chest_352"
 local storageSlots = {
   ["harvestcraft:potitem"] = 1,
   ["harvestcraft:bakewareitem"] = 2,
@@ -32,8 +33,8 @@ local storageSlots = {
   ["harvestcraft:soybeanitem"] = 44,
   ["harvestcraft:silkentofuitem"] = 45,
   ["harvestcraft:firmtofuitem"] = 46,
-  ["harvestcraft:doughitem"] = 46,
-  ["harvestcraft:stockitem"] = 47,
+  ["harvestcraft:doughitem"] = 47,
+  ["harvestcraft:stockitem"] = 48,
   
   ["minecraft:potato"] = 61,
   ["minecraft:baked_potato"] = 62,
@@ -191,6 +192,12 @@ crafts.tofacon = {
 	["output"] = "harvestcraft:rawtofaconitem"
 }
 
+crafts.tofaconCooked = {
+	[1] = "harvestcraft:rawtofaconitem",
+
+	["output"] = "harvestcraft:cookedtofaconitem"	
+}
+
 crafts.dough = {
 	[1] = "harvestcraft:mixingbowlitem", [2] = "minecraft:water_bucket", [3] = "harvestcraft:flouritem", 
 	[4] = "harvestcraft:saltitem",
@@ -248,4 +255,4 @@ crafts.breakfast = {
 	["output"] = "harvestcraft:southernstylebreakfastitem"
 }
 
-return  storageChest,storageSlots,crafts
+return  storageChest,storageSlots,trashChest,crafts

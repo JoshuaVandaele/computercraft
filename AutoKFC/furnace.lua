@@ -20,7 +20,7 @@ local trash = "minecraft:ender chest_352"
 trash = peripheral.wrap(trash)
 
 local storage,storageSlots = dofile("disk/storage.lua")
-storage = peripheral.wrap(storage)
+storageinv = peripheral.wrap(storage)
 
 local function scanInventory()
 	local inventory = {}
@@ -50,12 +50,14 @@ end
 while true do
 	storeItems()
 	local work = 0
+	local working = {}
 	for ingredient, slot in pairs(storageSlots) do
 		if string.match(ingredient,"raw") then
 			work = storageinv.pushItems(self,storageSlots[ingredient],64,1)
 			if work > 0 then
 				for _ = 1,math.ceil(work/#furnaces) do
 					for i = 1,#furnaces do
+						working[i] = true
 						furnaces[i].pullItems(self,1,1,1)
 					end
 				end
@@ -68,7 +70,7 @@ while true do
 		turtle.craft()
 		turtle.select(1)
 		for _ = 1,math.ceil(work/#furnaces) do
-			for i = 1,#furnaces do
+			for i in pairs(working) do
 				furnaces[i].pullItems(self,16,1,2)
 			end
 		end
@@ -78,7 +80,6 @@ while true do
 			furnaces[i].pushItems(self,3,64)
 		end
 		storeItems()
-	else
-		sleep(20)
 	end
+	sleep(60)
 end

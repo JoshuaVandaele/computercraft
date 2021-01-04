@@ -1,11 +1,10 @@
 local self = "turtle_3750"
 
-local trash = "minecraft:ender chest_352"
-
-local trash = peripheral.wrap(trash)
 local craftSlot = {1,2,3,5,6,7,9,10,11}
-local storage,storageinvSlots,crafts = dofile("disk/storage.lua")
+
+local storage,storageinvSlots,trash,crafts = dofile("disk/storage.lua")
 local storageinv = peripheral.wrap(storage)
+local trash = peripheral.wrap(trash)
 
 local function scanInventory()
 	local inventory = {}
@@ -75,6 +74,7 @@ local function make(craft)
 		if not possible then
 			print("Failed")
 			storeItems()
+			sleep(10)
 			return false
 		end
 		make(craft)
