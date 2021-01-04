@@ -96,8 +96,6 @@ local function make(craft)
 	turtle.craft()
 
 	storeItems()
-
-	sleep(1)
 end
 
 local function sortChest()
