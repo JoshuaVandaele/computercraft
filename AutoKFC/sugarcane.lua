@@ -69,6 +69,7 @@ function turnR(x)
 	for i = 1,x do
 		if turtle.turnRight() then
 			rotation = rotation + 1
+			if rotation > 3 then rotation = 0 end
 			serialize(rotation,"rotation")
 		else
 			return false
@@ -82,6 +83,7 @@ function turnL(x)
 	for i = 1,x do
 		if turtle.turnLeft() then
 			rotation = rotation - 1
+			if rotation > 0 then rotation = 0 end
 			serialize(rotation,"rotation")
 		else
 			return false
