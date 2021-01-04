@@ -62,7 +62,7 @@ local crafts = {}
 
 
 crafts.salt = {
-[1] = "harvestcraft:potitem", [2] = "minecraft:water_bucket", 
+[1] = "harvestcraft:potitem", [2] = "harvestcraft:freshwateritem", 
 
 ["output"] = "harvestcraft:saltitem"
 }
@@ -199,7 +199,7 @@ crafts.tofaconCooked = {
 }
 
 crafts.dough = {
-	[1] = "harvestcraft:mixingbowlitem", [2] = "minecraft:water_bucket", [3] = "harvestcraft:flouritem", 
+	[1] = "harvestcraft:mixingbowlitem", [2] = "harvestcraft:freshwateritem", [3] = "harvestcraft:flouritem", 
 	[4] = "harvestcraft:saltitem",
 
 	["output"] = "harvestcraft:doughitem"
@@ -243,7 +243,7 @@ crafts.biscuitgravy = {
 
 crafts.grits = {
 	[1] = "harvestcraft:potitem", [2] = "harvestcraft:cornmealitem", [3] = "harvestcraft:freshmilkitem", 
-	[4] = "minecraft:water_bucket", [5] = "harvestcraft:saltitem",
+	[4] = "harvestcraft:freshwateritem", [5] = "harvestcraft:saltitem",
 
 	["output"] = "harvestcraft:gritsitem"
 }

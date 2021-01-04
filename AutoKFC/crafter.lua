@@ -31,8 +31,8 @@ local function storeItems()
 	end
 end
 
-local function make(craft)
-	local stored = storageinv.list()
+local function make(craft,stored)
+	if not stored then stored = storageinv.list() end
 	if not stored or not craft then return end
 	if stored[ storageinvSlots[ craft["output"] ] ] and stored[ storageinvSlots[ craft["output"] ] ].count == 64 then
 		print("We already have too much of this item, aborting")
@@ -68,18 +68,16 @@ local function make(craft)
 		for name,c in pairs(crafts) do
 			if c["output"] == needs then
 				possible = true
-				make(crafts[name])
+				if not make(crafts[name],stored) then return end
 			end
 		end
 		if not possible then
 			print("Failed")
-			storeItems()
 			sleep(10)
 			return false
 		end
 		make(craft)
-		storeItems()
-		return
+		return true
 	end
 
 	local pulled = 0
@@ -94,8 +92,9 @@ local function make(craft)
 	end
 	
 	turtle.craft()
-
 	storeItems()
+	sleep(1)
+	return true
 end
 
 local function sortChest()
@@ -118,5 +117,11 @@ storeItems()
 sortChest()
 
 while true do
-  make(crafts.breakfast)
+  if make(crafts.breakfast) then
+  	print("Made one!")
+  	sleep(10)
+  else
+  	print("Failed, waiting 120s")
+  	sleep(120)
+  end
 end
