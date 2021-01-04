@@ -1,179 +1,11 @@
 local self = "turtle_3750"
 
-local storage = "minecraft:ironchest_gold_458"
+local trash = "minecraft:ender chest_352"
 
-local storageinv = peripheral.wrap(storage)
+local trash = peripheral.wrap(trash)
 local craftSlot = {1,2,3,5,6,7,9,10,11}
-local crafts = {}
-local storageinvSlots = {
-  ["harvestcraft:potitem"] = 1,
-  ["harvestcraft:bakewareitem"] = 2,
-  ["harvestcraft:cuttingboarditem"] = 3,
-  ["harvestcraft:mixingbowlitem"] = 4,
-  ["harvestcraft:saucepanitem"] = 5,
-  ["harvestcraft:mortarandpestleitem"] = 6,
-  ["harvestcraft:juiceritem"] = 7,
-
-
-  ["minecraft:bucket"] = 8,
-  ["minecraft:water_bucket"] = 9,
-
-  ["harvestcraft:saltitem"] = 19,
-  ["minecraft:potato"] = 20,
-  ["minecraft:baked_potato"] = 21,
-  ["minecraft:milk_bucket"] = 22,
-  ["harvestcraft:freshmilkitem"] = 23,
-  ["harvestcraft:freshwateritem"] = 24,
-  ["harvestcraft:heavycreamitem"] = 25,
-  ["harvestcraft:butteritem"] = 26,
-  ["harvestcraft:bubblywateritem"] = 27,
-
-  ["harvestcraft:spiceleafitem"] = 28,
-  ["minecraft:reeds"] = 29,
-  ["minecraft:sugar"] = 30,
-  ["harvestcraft:flouritem"] = 31,
-  ["harvestcraft:batteritem"] = 32,
-  ["minecraft:egg"] = 33,
-  ["harvestcraft:spiceleafseeditem"] = 34,
-  ["harvestcraft:oliveoilitem"] = 35,
-  ["harvestcraft:peppercornitem"] = 36,
-  ["harvestcraft:blackpepperitem"] = 37,
-  ["harvestcraft:cornitem"] = 38,
-  ["harvestcraft:cornmealitem"] = 39,
-  
-  ["harvestcraft:friesitem"] = 64,
-  ["harvestcraft:mashedpotatoesitem"] = 65,
-  ["harvestcraft:butteredpotatoitem"] = 66,
-  ["harvestcraft:colasodaitem"] = 67,
-  ["minecraft:chicken"] = 68,
-  ["harvestcraft:friedchickenitem"] = 69,
-  ["harvestcraft:friedfeastitem"] = 70,
-  
-}
-
-crafts.salt = {
-[1] = "harvestcraft:potitem", [2] = "minecraft:water_bucket", 
-
-["output"] = "harvestcraft:saltitem"
-}
-
-crafts.fries = {
-[1] = "harvestcraft:bakewareitem", [2] = "minecraft:potato", [3] = "harvestcraft:saltitem", 
-
-["output"] = "harvestcraft:friesitem"
-}
-
-crafts.bakedpotato = {
-	[1] = "minecraft:potato", [2] = "harvestcraft:bakewareitem",
-
-	["output"] = "minecraft:baked_potato"
-}
-
-crafts.freshmilk = {
-	[1] = "minecraft:milk_bucket",
-
-	["output"] = "harvestcraft:freshmilkitem"
-}
-
-crafts.cream = {
-	[1] = "harvestcraft:mixingbowlitem", [2] = "harvestcraft:freshmilkitem",
-
-	["output"] = "harvestcraft:heavycreamitem"
-}
-
-crafts.butter = {
-	[1] = "harvestcraft:saucepanitem", [2] = "harvestcraft:heavycreamitem", [3] = "harvestcraft:saltitem",
-
-	["output"] = "harvestcraft:butteritem"
-}
-
-crafts.butterpotatoes = {
-	[1] = "minecraft:baked_potato", [2] = "harvestcraft:butteritem",
-
-	["output"] = "harvestcraft:butteredpotatoitem"
-}
-
-crafts.mashedpotato = {
-	[1] = "harvestcraft:mixingbowlitem", [2] = "harvestcraft:butteredpotatoitem", [3] = "harvestcraft:saltitem",
-
-	["output"] = "harvestcraft:mashedpotatoesitem"
-}
-
-crafts.freshwater = {
-	[1] = "minecraft:water_bucket",
-
-	["output"] = "harvestcraft:freshwateritem"
-}
-
-crafts.bubblywater = {
-	[1] = "harvestcraft:potitem", [2] = "harvestcraft:freshwateritem", [3] = "harvestcraft:freshwateritem",
-
-	["output"] = "harvestcraft:bubblywateritem"
-}
-
-crafts.sugar = {
-	[1] = "minecraft:reeds",
-
-	["output"] = "minecraft:sugar"
-}
-
-crafts.cola = {
-	[1] = "harvestcraft:potitem", [2] = "harvestcraft:bubblywateritem", [3] = "minecraft:sugar", [4] = "harvestcraft:spiceleafitem",
-
-	["output"] = "harvestcraft:colasodaitem"
-}
-
-crafts.flour = {
-	[1] = "harvestcraft:mortarandpestleitem", [2] = "minecraft:potato",
-
-	["output"] = "harvestcraft:flouritem" 
-}
-
-crafts.batter = {
-	[1] = "harvestcraft:mixingbowlitem", [2] = "harvestcraft:flouritem", [3] = "minecraft:egg",
-
-	["output"] = "harvestcraft:batteritem"
-}
-
-crafts.seeds = {
-	[1] = "harvestcraft:spiceleafitem",
-
-	["output"] = "harvestcraft:spiceleafseeditem"
-}
-
-crafts.oil = {
-	[1] = "harvestcraft:juiceritem", [2] = "harvestcraft:spiceleafseeditem", [3] = "harvestcraft:spiceleafseeditem",
-
-	["output"] = 'harvestcraft:oliveoilitem'
-}
-
-crafts.pepper = {
-	[1] = "harvestcraft:mortarandpestleitem", [2] = "harvestcraft:peppercornitem",
-
-
-	["output"] = "harvestcraft:blackpepperitem"
-}
-
-crafts.kfcbucket = {
-	[1] = "harvestcraft:potitem", [2] = "minecraft:chicken", [3] = "harvestcraft:batteritem", 
-	[4] = "harvestcraft:spiceleafitem", [5] = "harvestcraft:blackpepperitem", [6] = "harvestcraft:oliveoilitem",
-
-	["output"] = "harvestcraft:friedchickenitem" 
-}
-
-crafts.feast = {
-	[1] = "harvestcraft:cuttingboarditem", [2] = "harvestcraft:friedchickenitem", [3] = "harvestcraft:friesitem",
-	[4] = "harvestcraft:mashedpotatoesitem", [5] = "harvestcraft:colasodaitem",
-
-	["output"] = "harvestcraft:friedfeastitem"
-}
-
-crafts.cornmeal = {
-	[1] = "harvestcraft:mortarandpestleitem", [2] = "harvestcraft:cornitem",
-
-
-	["output"] = "harvestcraft:cornmealitem"
-}
+local storage,storageinvSlots,crafts = dofile("disk/storage.lua")
+local storageinv = peripheral.wrap(storage)
 
 local function scanInventory()
 	local inventory = {}
@@ -194,8 +26,7 @@ local function storeItems()
 	for _,_ in pairs(stored) do -- I hate this, but #stored doesn't work because lua's stupid
 		print("Stocking overflowed items")
 		for i = 1,16 do
-			turtle.select(i)  
-			turtle.dropUp()
+			trash.pullItems(self,i,64)
 		end
 		break
 	end
@@ -289,12 +120,5 @@ storeItems()
 sortChest()
 
 while true do
-  for k,v in pairs(crafts) do
-  	print("===============")
-  	make(v)
-  end
---  make(crafts.cola)
---  make(crafts.fries)
---  make(crafts.mashedpotato)
-
+  make(crafts.breakfast)
 end

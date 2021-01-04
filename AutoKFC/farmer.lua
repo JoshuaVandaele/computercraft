@@ -2,14 +2,9 @@ local finalAge = 3
 
 self = "turtle_3768"
 
-storage = "minecraft:ironchest_gold_458"
+local storage,storageSlots = dofile("disk/storage.lua")
 storage = peripheral.wrap(storage)
-storageSlots = {
-  ["minecraft:potato"] = 20,
-  ["harvestcraft:spiceleafitem"] = 28,
-  ["harvestcraft:cornitem"] = 38,
 
-}
 local position = {["x"] = 0, ["y"] = 0, ["z"] = 0}
 local rotation = 0
 local debug = false

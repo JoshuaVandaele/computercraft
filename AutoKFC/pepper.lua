@@ -1,11 +1,7 @@
 self = "turtle_3783"
 
-storage = "minecraft:ironchest_gold_458"
- 
+local storage,storageSlots = dofile("disk/storage.lua")
 storage = peripheral.wrap(storage)
-storageSlots = {
-  ["harvestcraft:peppercornitem"] = 36,
-}
 
 treestorage = "minecraft:chest_4319"
 treestorage = peripheral.wrap(treestorage)

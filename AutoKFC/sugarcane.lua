@@ -1,16 +1,23 @@
 self = "turtle_3771"
 
-storage = "minecraft:ironchest_gold_458"
+local storage,storageSlots = dofile("disk/storage.lua")
 storage = peripheral.wrap(storage)
-storageSlots = {
-  ["minecraft:reeds"] = 29,
-}
-local position = unserialize("pos") or {["x"] = 0, ["y"] = 0, ["z"] = 0}
-local rotation = unserialize("rotation") or 0
 
 local farmwidth = 20
 local farmheight = 3
 
+
+function unserialize(name)  -- Get data
+    if fs.exists('/.data/'..name) then
+        local f = fs.open('/.data/'..name, 'r')
+        data = textutils.unserialize(f.readAll())
+        f.close()
+    end
+    return data
+end
+
+local position = unserialize("pos") or {["x"] = 0, ["y"] = 0, ["z"] = 0}
+local rotation = unserialize("rotation") or 0
 
 function up(x)
 	if not x then x = 1 end
@@ -114,14 +121,7 @@ function serialize(data, name)  -- Store data
     f.close()
 end
  
-function unserialize(name)  -- Get data
-    if fs.exists('/.data/'..name) then
-        local f = fs.open('/.data/'..name, 'r')
-        data = textutils.unserialize(f.readAll())
-        f.close()
-    end
-    return data
-end
+
 
 if position.x  ~= position.y and position.x ~= position.z and position.x~= 0 then
 	while rotation ~= 2 do

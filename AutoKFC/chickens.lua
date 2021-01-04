@@ -1,11 +1,7 @@
 self = "turtle_3773"
 
-storage = "minecraft:ironchest_gold_458"
+local storage,storageSlots = dofile("disk/storage.lua")
 storage = peripheral.wrap(storage)
-storageSlots = {
-  ["minecraft:egg"] = 33,
-  ["minecraft:chicken"] = 68,
-}
 
 function store()
 	stored = 0
