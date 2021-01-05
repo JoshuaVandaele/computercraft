@@ -8,8 +8,10 @@ while true do
 	local stored = nil
  	local item = turtle.getItemDetail() or {}
  	if not item.name then 
+ 		print("No item name")
  		stored = storage.list()
-		if not stored[ storageSlots["minecraft:milk_bucket"] ] and not item then
+		if not stored[ storageSlots["minecraft:milk_bucket"] ] then
+			print("No milk")
 		    storage.pushItems(self,storageSlots["minecraft:bucket"],1,1)
 		    item.name = "minecraft:bucket"
 	 	end	
