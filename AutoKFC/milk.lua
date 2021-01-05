@@ -7,7 +7,7 @@ storage = peripheral.wrap(storage)
 while true do
 	local stored = nil
  	local item = turtle.getItemDetail() or {}
- 	if not item then 
+ 	if not item.name then 
  		stored = storage.list()
 		if not stored[ storageSlots["minecraft:milk_bucket"] ] and not item then
 		    storage.pushItems(self,storageSlots["minecraft:bucket"],1,1)
