@@ -1,7 +1,8 @@
 self = "turtle_3771"
 
-local storage,storageSlots = dofile("disk/storage.lua")
+local storage,storageSlots,trash = dofile("disk/storage.lua")
 storage = peripheral.wrap(storage)
+trash = peripheral.wrap(trash)
 
 local farmwidth = 20
 local farmheight = 3
@@ -123,7 +124,11 @@ function serialize(data, name)  -- Store data
     f.close()
 end
  
-
+function trashItems()
+	for i = 1,16 do
+		trash.pullItems(self,i,64)
+	end
+end
 
 if position.x  ~= position.y and position.x ~= position.z and position.x~= 0 then
 	while rotation ~= 2 do
@@ -150,13 +155,7 @@ end
 while true do
 	if turtle.inspect() then
 		refuel()
-		for i = 1,16 do
-			turtle.select(i)
-			local slot = turtle.getItemDetail()
-			if slot then
-				turtle.dropDown(64)
-			end
-		end
+		trashItems()
 
 		while turtle.getFuelLevel() < farmwidth*farmheight*2 do
 			sleep(10)

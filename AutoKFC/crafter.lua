@@ -57,9 +57,11 @@ local function make(craft,stored)
 	for slot, ingredient in ipairs(craft) do
 		if slot ~= "output" then
 			if not stored[storageinvSlots[ingredient]] or not stored[storageinvSlots[ingredient]].name == ingredient or (stored[storageinvSlots[ingredient]].count < (doubles[ingredient] or 1)) then
-				print("Missing "..ingredient.." in slot "..storageinvSlots[ingredient])
-				needs = ingredient
-				break
+				if type(ingredient) == "string" then
+					print("Missing "..tostring(ingredient))
+					needs = tostring(ingredient)
+					break
+				end
 			end
 		end
 	end 
@@ -86,11 +88,15 @@ local function make(craft,stored)
 	local pulled = 0
 	print("Crafting "..craft["output"].."..")
 	for slot, item in ipairs(craft) do
-		pulled = storageinv.pushItems(self,storageinvSlots[item],1,craftSlot[slot])  -- Might also be a cause of lag, trying to make the less calls here
-		if pulled == 0 then
-			print("Something wrong happened, aborting!")
-			storeItems()
-			return
+		if type(item) == "string" then
+			pulled = storageinv.pushItems(self,storageinvSlots[item],1,craftSlot[slot])  -- Might also be a cause of lag, trying to make the less calls here
+			if pulled == 0 then
+				print("Something wrong happened, aborting!")
+				storeItems()
+				return
+			end
+		else
+			item(self,storage)
 		end
 	end
 	

@@ -60,6 +60,27 @@ local storageSlots = {
 
 local crafts = {}
 
+crafts.water = {
+	[1] = function (self,storage)
+		local slave = peripheral.wrap("turtle_3749")
+		slave.pullItems(storage,storageSlots["minecraft:bucket"],1,1)
+		sleep(0.25)
+		slave.pushItems(self,1,1,1)
+	end,
+
+	["output"] = "minecraft:water_bucket"
+}
+
+crafts.milk = {
+	[1] = function (self,storage)
+		local slave = peripheral.wrap("turtle_3767")
+		slave.pullItems(storage,storageSlots["minecraft:bucket"],1,1)
+		sleep(0.25)
+		slave.pushItems(self,1,1,1)
+	end,
+
+	["output"] = "minecraft:milk_bucket"
+}
 
 crafts.salt = {
 [1] = "harvestcraft:potitem", [2] = "harvestcraft:freshwateritem", 
