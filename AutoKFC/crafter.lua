@@ -58,8 +58,8 @@ local function make(craft,stored)
 		if slot ~= "output" then
 			if not stored[storageinvSlots[ingredient]] or not stored[storageinvSlots[ingredient]].name == ingredient or (stored[storageinvSlots[ingredient]].count < (doubles[ingredient] or 1)) then
 				if type(ingredient) == "string" then
-					print("Missing "..tostring(ingredient))
-					needs = tostring(ingredient)
+					print("Missing "..ingredient)
+					needs = ingredient
 					break
 				end
 			end
