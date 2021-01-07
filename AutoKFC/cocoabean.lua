@@ -57,11 +57,24 @@ trash = peripheral.wrap(trash)
 
 local length = 32
 
+function serialize(data, name)  -- Store data
+    if not fs.exists('/disk') then
+        return
+    end
+    if not fs.exists('/.data') then
+        fs.makeDir('/.data')
+    end
+    local f = fs.open('/.data/'..name, 'w')
+    f.write(textutils.serialize(data))
+    f.close()
+end
+
 function up(x)
 	if not x then x = 1 end
 	for i = 1,x do
 		if turtle.up() then
 			position.y = position.y + 1
+			serialize(position,"pos")
 		else
 			return false
 		end
@@ -74,6 +87,7 @@ function down(x)
 	for i = 1,x do
 		if turtle.down() then
 			position.y = position.y - 1
+			serialize(position,"pos")
 		else
 			return false
 		end
@@ -146,18 +160,6 @@ function farm(force)
 		turtle.dig()
 		turtle.place()
 	end
-end
-
-function serialize(data, name)  -- Store data
-    if not fs.exists('/disk') then
-        return
-    end
-    if not fs.exists('/.data') then
-        fs.makeDir('/.data')
-    end
-    local f = fs.open('/.data/'..name, 'w')
-    f.write(textutils.serialize(data))
-    f.close()
 end
  
 function trashItems()

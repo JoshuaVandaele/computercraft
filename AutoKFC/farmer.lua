@@ -1,23 +1,53 @@
-local finalAge = 3
-
-self = "turtle_3768"
-
-local storage,storageSlots,trash = dofile("disk/storage.lua")
-storage = peripheral.wrap(storage)
-trash = peripheral.wrap(trash)
+if fs.exists('/disk/storage.lua') then
+	storage,storageSlots,trash = dofile("disk/storage.lua")
+end
 
 local position = {["x"] = 0, ["y"] = 0, ["z"] = 0}
 local rotation = 0
 local debug = false
-local farmwidth = 9
-local farmheight = 9
 
+function serialize(data, name)  -- Store data
+    if not fs.exists('/.data') then
+        fs.makeDir('/.data')
+    end
+    local f = fs.open('/.data/'..name, 'w')
+    f.write(textutils.serialize(data))
+    f.close()
+end
+
+local function unserialize(name)  -- Get data
+	local data
+    if fs.exists('/.data/'..name) then
+        local f = fs.open('/.data/'..name, 'r')
+        data = textutils.unserialize(f.readAll())
+        f.close()
+    end
+    return data
+end
+
+local self, farmX, farmZ, finalAge = unpack(unserialize("info") or {})
+if not finalAge then
+	print("Welcome to the setup wizard! We need to ask a few questions for you to start.")
+	print("What is the number of the turtle on the local network?")
+	print("Hint: It should be turtle_XXX..")
+	self = "turtle_"..read()
+	print("Great! So it should be "..self)
+	print("Now, how big is the farm on the X axis?")
+	farmX = tonumber(read())
+	print("On the Z axis?")
+	farmZ = tonumber(read())
+	print(farmX.."x"..farmZ.." Gotcha. And now, at what age are the crops done growing?")
+	finalAge = tonumber(read())
+	print("Great! Your turtle should work now.")
+	serialize({self,farmX,farmZ, finalAge},"info")
+end
 
 function up(x)
 	if not x then x = 1 end
 	for i = 1,x do
 		if turtle.up() then
 			position.y = position.y + 1
+			serialize(position,"pos")
 		else
 			return false
 		end
@@ -30,6 +60,7 @@ function down(x)
 	for i = 1,x do
 		if turtle.down() then
 			position.y = position.y - 1
+			serialize(position,"pos")
 		else
 			return false
 		end
@@ -50,6 +81,7 @@ function forward(x)
 			elseif rotation == 3 then
 				position.z = position.z-1
 			end
+			serialize(position,"pos")
 		else
 			return false
 		end
@@ -62,6 +94,8 @@ function turnR(x)
 	for i = 1,x do
 		if turtle.turnRight() then
 			rotation = rotation + 1
+			if rotation > 3 then rotation = 0 end
+			serialize(rotation,"rotation")
 		else
 			return false
 		end
@@ -74,6 +108,8 @@ function turnL(x)
 	for i = 1,x do
 		if turtle.turnLeft() then
 			rotation = rotation - 1
+			if rotation <0 then rotation = 3 end
+			serialize(rotation,"rotation")
 		else
 			return false
 		end
@@ -95,17 +131,8 @@ function farm(force)
 	turtle.select(1)
 	if crop and inspect["state"].age == finalAge or force then
 		turtle.digDown()
-		if turtle.craft then
-			turtle.select(16)
-			turtle.craft(1)
-		end
 		turtle.placeDown()
-	end
-	if not crop then
-		if turtle.craft then
-			turtle.select(16)
-			turtle.craft(1)
-		end
+	else
 		turtle.placeDown()
 	end
 end
@@ -116,12 +143,55 @@ function trashItems()
 	end
 end
 
+if not storage then
+	position = unserialize("pos") or {["x"] = 0, ["y"] = 0, ["z"] = 0}
+	rotation = unserialize("rotation") or 0
+	print("We are at "..position.x.." "..position.y.." "..position.z.." at rotation "..rotation)
+	if position.x  ~= position.y and position.x ~= position.z and position.x~= 0 then
+		while rotation ~= 2 do
+			turnR()
+		end
+		while position.x ~= 0 do
+			if not forward() then
+				print("Stuck at "..position.x.." "..position.y.." "..position.z.." at rotation "..rotation)
+				sleep(60)
+			end
+		end
+		while rotation ~= 3 do
+			turnR()
+		end
+		while position.z ~= 0 do
+			if not forward() then
+				print("Stuck at "..position.x.." "..position.y.." "..position.z.." at rotation "..rotation)
+				sleep(60)
+			end
+		end
+		while rotation ~= 0 do
+			turnR()
+		end
+		while position.y > 0 do
+			if not down() then
+				turtle.digDown()
+			end
+		end
+		while position.y < 0 do
+			if not up() then
+				turtle.digUp()
+			end
+		end
+	end
+end
+
+storage,storageSlots,trash = dofile("disk/storage.lua")
+storage = peripheral.wrap(storage)
+trash = peripheral.wrap(trash)
+
 while true do
 	crop, inspect = turtle.inspect()
 	if not crop or inspect["state"].age >= math.ceil(finalAge/2) or debug then 
 		refuel()
 		trashItems()
-		while turtle.getFuelLevel() < farmwidth*farmheight*2 do
+		while turtle.getFuelLevel() < farmZ*farmX*2 do
 			sleep(120)
 			refuel()
 		end
@@ -135,8 +205,8 @@ while true do
 			end
 		end
 
-		for i = 1,farmheight do
-			xpos = farmwidth
+		for i = 1,farmX do
+			xpos = farmZ
 			
 			if rotation == 2 then
 				xpos = 1
@@ -154,13 +224,13 @@ while true do
 				turnL()
 			end
 
-			while (position.z ~= i) and (i ~= farmheight) do
+			while (position.z ~= i) and (i ~= farmX) do
 				if forward() then
 					farm()
 				end
 			end
 
-			if xpos == farmwidth then
+			if xpos == farmZ then
 				turnR()
 			else
 				turnL()
