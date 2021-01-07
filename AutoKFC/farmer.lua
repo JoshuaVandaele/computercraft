@@ -87,6 +87,7 @@ function refuel()
 		turtle.select(i)
 		turtle.refuel(64)
 	end
+	sleep(10)
 end
 
 function farm(force)
@@ -153,7 +154,7 @@ while true do
 				turnL()
 			end
 
-			while position.z ~= i do
+			while (position.z ~= i) and (i ~= farmheight) do
 				if forward() then
 					farm()
 				end
@@ -165,6 +166,7 @@ while true do
 				turnL()
 			end
 		end
+		
 		turnR()
 		while position.z ~= 0 do
 			if forward() then

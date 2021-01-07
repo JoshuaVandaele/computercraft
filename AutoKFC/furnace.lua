@@ -63,7 +63,7 @@ while true do
 	local working = {}
 	for ingredient, slot in pairs(storageSlots) do
 		if string.match(ingredient,"raw") then
-			work = storageinv.pushItems(self,storageSlots[ingredient],64,1)
+			work = storageinv.pushItems(self,storageSlots[ingredient],64,1) or 0
 			if work > 0 then
 				for _ = 1,math.ceil(work/#furnaces) do
 					for i = 1,#furnaces do

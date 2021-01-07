@@ -8,8 +8,9 @@ local storageSlots = {
   ["harvestcraft:saucepanitem"] = 5,
   ["harvestcraft:mortarandpestleitem"] = 6,
   ["harvestcraft:juiceritem"] = 7,
-  ["minecraft:bucket"] = 8,
-  ["minecraft:water_bucket"] = 9,
+  ["harvestcraft:skilletitem"] = 8,
+  ["minecraft:bucket"] = 9,
+  ["minecraft:water_bucket"] = 10,
 
   ["harvestcraft:saltitem"] = 25,
   ["minecraft:milk_bucket"] = 26,
@@ -35,6 +36,10 @@ local storageSlots = {
   ["harvestcraft:firmtofuitem"] = 46,
   ["harvestcraft:doughitem"] = 47,
   ["harvestcraft:stockitem"] = 48,
+  ["minecraft:dye"] = 49,
+  ["harvestcraft:cocoapowderitem"] = 49,
+  ["harvestcraft:chocolatemilkitem"] = 50,
+  ["harvestcraft:onionitem"] = 51,
   
   ["minecraft:potato"] = 61,
   ["minecraft:baked_potato"] = 62,
@@ -52,9 +57,12 @@ local storageSlots = {
   ["minecraft:bread"] = 74,
   ["harvestcraft:toastitem"] = 75,
   ["harvestcraft:friedchickenitem"] = 76,
+  ["harvestcraft:potatocakesitem"] = 77,
+  ["harvestcraft:friedeggitem"] = 78,
 
   ["harvestcraft:southernstylebreakfastitem"] = 97,
-  ["harvestcraft:friedfeastitem"] = 98,
+  ["harvestcraft:heartybreakfastitem"] = 98,
+  ["harvestcraft:friedfeastitem"] = 99,
   
 }
 
@@ -274,6 +282,38 @@ crafts.breakfast = {
 	[4] = "harvestcraft:cookedtofaconitem", [5] = "minecraft:egg", [6] = "harvestcraft:toastitem",
 
 	["output"] = "harvestcraft:southernstylebreakfastitem"
+}
+
+crafts.choco = {
+	[1] = "harvestcraft:mortarandpestleitem", [2] = "minecraft:dye",
+
+	["output"] = "harvestcraft:cocoapowderitem"
+}
+
+crafts.chocomilk = {
+	[1] = "harvestcraft:freshmilkitem", [2] = "harvestcraft:cocoapowderitem",
+
+	["output"] = "harvestcraft:chocolatemilkitem"
+}
+
+crafts.potatocake = {
+	[1] = "harvestcraft:skilletitem", [2] = "harvestcraft:onionitem", [3] = "minecraft:potato", 
+	[4] = "harvestcraft:butteritem",
+
+	["output"] = "harvestcraft:potatocakesitem"
+}
+
+crafts.eggfried = {
+	[1] = "harvestcraft:skilletitem", [2] = "minecraft:egg",
+
+	["output"] = "harvestcraft:friedeggitem"
+}
+
+crafts.heart = {
+	[1] = "harvestcraft:cookedtofaconitem", [2] = "harvestcraft:friedeggitem", [3] = "harvestcraft:toastitem",
+	[4] = "harvestcraft:potatocakesitem", [5] = "harvestcraft:chocolatemilkitem",
+
+	["output"] = "harvestcraft:heartybreakfastitem"
 }
 
 return  storageChest,storageSlots,trashChest,crafts

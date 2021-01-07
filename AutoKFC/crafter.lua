@@ -53,6 +53,7 @@ local function make(craft,stored)
 
 
 	local needs = ""
+	local func = false
 
 	for slot, ingredient in ipairs(craft) do
 		if slot ~= "output" then
@@ -61,6 +62,8 @@ local function make(craft,stored)
 					print("Missing "..ingredient)
 					needs = ingredient
 					break
+				else
+					func = true
 				end
 			end
 		end
@@ -100,7 +103,7 @@ local function make(craft,stored)
 		end
 	end
 	
-	turtle.craft()
+	if not func then turtle.craft() end
 	storeItems()
 	sleep(1)
 	return true
@@ -127,7 +130,10 @@ sortChest()
 
 while true do
   if make(crafts.breakfast) then
-  	print("Made one!")
+  	print("Made a top tier one!")
+  	sleep(10)
+  elseif make(crafts.heart) then
+	print("Made a hearty one!")
   	sleep(10)
   else
   	print("Failed, waiting 120s")

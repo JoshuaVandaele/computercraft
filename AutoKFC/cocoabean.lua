@@ -1,24 +1,61 @@
-self = "turtle_3771"
+local finalAge = 2
+
+self = "turtle_3830"
+
+local storage,storageSlots,trash = dofile("disk/storage.lua")
+local position = {["x"] = 0, ["y"] = 0, ["z"] = 0}
+local rotation = 0
+
+if not storage then
+	local function unserialize(name)  -- Get data
+	    if fs.exists('/.data/'..name) then
+	        local f = fs.open('/.data/'..name, 'r')
+	        data = textutils.unserialize(f.readAll())
+	        f.close()
+	    end
+	    return data
+	end
+
+	position = unserialize("pos") or {["x"] = 0, ["y"] = 0, ["z"] = 0}
+	rotation = unserialize("rotation") or 0
+	if position.x  ~= position.y and position.x ~= position.z and position.x~= 0 then
+		while rotation ~= 2 do
+			turnR()
+		end
+		while position.x ~= 0 do
+			if not forward() then
+				turtle.dig()
+			end
+		end
+		while rotation ~= 3 do
+			turnR()
+		end
+		while position.z ~= 0 do
+			if not forward() then
+				turtle.dig()
+			end
+		end
+		while rotation ~= 0 do
+			turnR()
+		end
+		while position.y > 0 do
+			if not down() then
+				turtle.dig()
+			end
+		end
+		while position.y < 0 do
+			if not up() then
+				tutylr.dig()
+			end
+		end
+	end
+end
 
 local storage,storageSlots,trash = dofile("disk/storage.lua")
 storage = peripheral.wrap(storage)
 trash = peripheral.wrap(trash)
 
-local farmwidth = 20
-local farmheight = 3
-
-
-function unserialize(name)  -- Get data
-    if fs.exists('/.data/'..name) then
-        local f = fs.open('/.data/'..name, 'r')
-        data = textutils.unserialize(f.readAll())
-        f.close()
-    end
-    return data
-end
-
-local position = unserialize("pos") or {["x"] = 0, ["y"] = 0, ["z"] = 0}
-local rotation = unserialize("rotation") or 0
+local length = 32
 
 function up(x)
 	if not x then x = 1 end
@@ -102,14 +139,12 @@ function refuel()
 	sleep(10)
 end
 
-function farm()
-	_, inspect = turtle.inspect()
-	if _ and inspect.name == "minecraft:reeds" then
+function farm(force)
+	turtle.select(1)
+	local crop, inspect = turtle.inspect()
+	if not crop or crop and inspect["state"] and inspect["state"].age == finalAge or force then
 		turtle.dig()
-	end
-	_, inspect = turtle.inspectDown()
-	if _ and inspect.name == "minecraft:reeds" then
-		turtle.digDown()
+		turtle.place()
 	end
 end
 
@@ -131,77 +166,49 @@ function trashItems()
 	end
 end
 
-if position.x  ~= position.y and position.x ~= position.z and position.x~= 0 then
-	while rotation ~= 2 do
-		turnR()
-	end
-	while position.x ~= 0 do
-		if not forward() then
-			dig()
-		end
-	end
-	while rotation ~= 3 do
-		turnR()
-	end
-	while position.z ~= 0 do
-		if not forward() then
-			dig()
-		end
-	end
-	while rotation ~= 0 do
-		turnR()
-	end
-end
-
 while true do
-	if turtle.inspect() then
+	crop, inspect = turtle.inspect()
+	if not crop or inspect["state"].age >= finalAge then 
 		refuel()
 		trashItems()
 
-		while turtle.getFuelLevel() < farmwidth*farmheight*2 do
-			sleep(10)
+		while turtle.getFuelLevel() < length*4 do
 			refuel()
+			sleep(120)
 		end
-
-		turtle.dig()
-
-
-		while position.x ~= farmwidth-1 do
-			if forward() then
+		for i = 1,length/2 do
+			farm()
+			for i = 1,2 do
+				while not up() do
+					refuel()
+				end
 				farm()
-			else
+			end
+			turnR()
+			while not forward() do
+				refuel()
+			end
+			turnL()
+				farm()
+			for i = 1,2 do
+				while not down() do
+					refuel()
+				end
+				farm()
+			end
+			turnR()
+			while not forward() do
+				refuel()
+			end
+			turnL()
+		end
+		turnL()
+		for i = 1,length do
+			while not forward() do
 				refuel()
 			end
 		end
 		turnR()
-		turtle.dig()
-		while position.z ~= farmheight-1 do
-			if forward() then
-				farm()
-			else
-				refuel()
-			end
-		end
-		turnR()
-		turtle.dig()
-		while position.x ~= 0 do
-			if forward() then
-				farm()
-			else
-				refuel()
-			end
-		end
-		turnR()
-		turtle.dig()
-		while position.z ~= 0 do
-			if forward() then
-				farm()
-			else
-				refuel()
-			end
-		end
-		turnR()
-		turtle.dig()
 	end
 	for i = 1,16 do
 		turtle.select(i)
@@ -210,6 +217,5 @@ while true do
 			storage.pullItems(self,i,64,storageSlots[slot.name])
 		end
 	end
-	position = {["x"] = 0, ["y"] = 0, ["z"] = 0}
 	sleep(60)
 end
