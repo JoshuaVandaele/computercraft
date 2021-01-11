@@ -62,7 +62,7 @@ while true do
 	local work = 0
 	local working = {}
 	for ingredient, slot in pairs(storageSlots) do
-		if string.match(ingredient,"raw") then
+		if string.match(ingredient,"raw") and not storageinv.list()[storageSlots[string.gsub(ingredient,"raw","cooked")]] or string.match(ingredient,"raw") and storageinv.list()[storageSlots[string.gsub(ingredient,"raw","cooked")]].count < 32 then
 			work = storageinv.pushItems(self,storageSlots[ingredient],64,1) or 0
 			if work > 0 then
 				for _ = 1,math.ceil(work/#furnaces) do

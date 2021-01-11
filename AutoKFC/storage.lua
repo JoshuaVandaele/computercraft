@@ -37,9 +37,9 @@ local storageSlots = {
   ["harvestcraft:doughitem"] = 47,
   ["harvestcraft:stockitem"] = 48,
   ["minecraft:dye"] = 49,
-  ["harvestcraft:cocoapowderitem"] = 49,
-  ["harvestcraft:chocolatemilkitem"] = 50,
-  ["harvestcraft:onionitem"] = 51,
+  ["harvestcraft:cocoapowderitem"] = 50,
+  ["harvestcraft:chocolatemilkitem"] = 51,
+  ["harvestcraft:onionitem"] = 52,
   
   ["minecraft:potato"] = 61,
   ["minecraft:baked_potato"] = 62,
