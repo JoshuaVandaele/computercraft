@@ -60,7 +60,10 @@ local function refuel()
 	return turtle.getFuelLevel()
 end
 
-local function go_to(x,y,z,yLast)
+local function go_to(x,y,z,yLast,dangerOk)
+	if y < -1 and not dangerOk then
+		y = 0
+	end
 	x = (x-position.x)
 	y = (y-position.y)
 	z = (z-position.z)
@@ -174,7 +177,7 @@ local function update()
 	position = {["x"] = 0, ["y"] = 0, ["z"] = 0}
 	local _, target = findBlocks(scanned,base,true,true)
 	if target[1] then
-		go_to(target[1].x,target[1].y+1,target[1].z)
+		go_to(target[1].x,target[1].y+1,target[1].z,false,true)
 	else
 		print("Emergency return home, something went wrong")
 		position = oldPos
@@ -221,7 +224,7 @@ local function giveMeTheSaplings(bitch)
 	
 	local entities = scanner.sense()
 	for _,entity in pairs(entities) do
-		if entity.displayName == "item.tile.sapling.oak" and entity.y > -2 and entity.y < 3 and entity.z > -scanner_radius and entity.z < scanner_radius and entity.x > -scanner_radius and entity.x < scanner_radius then
+		if entity.displayName == "item.tile.sapling.oak" and entity.y < 3 and entity.z > -scanner_radius and entity.z < scanner_radius and entity.x > -scanner_radius and entity.x < scanner_radius then
 			go_to(round(entity.x),round(entity.y+1),round(entity.z),true)
 			go_to(round(entity.x),0,round(entity.z),true)
 			turtle.suckDown()
