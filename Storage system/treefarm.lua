@@ -238,6 +238,7 @@ local function giveMeTheSaplings(bitch)
 	for _,entity in pairs(entities) do
 		if entity.displayName == "item.tile.sapling.oak" and entity.y < 3 and entity.z > -scanner_radius and entity.z < scanner_radius and entity.x > -scanner_radius and entity.x < scanner_radius then
 			go_to(round(entity.x),round(entity.y+1),round(entity.z),true)
+			go_to(round(entity.x),0,round(entity.z),true)
 			turtle.suckDown()
 			turtle.suckUp()
 		end
@@ -251,6 +252,7 @@ end
 switchScanners("scanner")
 update()
 storage = peripheral.wrap("minecraft:chest_4381")
+local repeats = 0
 
 while true do
 	sleep(1)
@@ -262,8 +264,8 @@ while true do
 		end
 	end
 	local found, targets = findBlocks(scanned,"minecraft:log")
-	if found then
-
+	if found  and repeats < 5 then
+		repeats = repeats+1
 		print("Trees found")
 		for _,target in pairs(targets) do
 			go_to(target.x,0,target.z)
@@ -273,7 +275,11 @@ while true do
 		storage.pullItems(self,1,64)
 		storage.pullItems(self,2,64)
 		storage.pullItems(self,3,64)
+		storage.pullItems(self,4,64)
+		storage.pullItems(self,5,64)
+		storage.pullItems(self,6,64)
 	else
+		repeats = 0
 		giveMeTheSaplings()
 		update()
 		replant(scanned)
