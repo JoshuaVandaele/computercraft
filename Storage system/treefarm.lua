@@ -166,21 +166,6 @@ local function findBlocks(scanned,block,doY,once)
 	return found, target
 end
 
-local function fucktrees()
-	turtle.digDown()
-	local t, inspect = turtle.inspectUp()
-	local ups = 0
-	while t and inspect.name == "minecraft:log" do
-		turtle.digUp()
-		turtle.up()
-		ups = ups+1
-		t, inspect = turtle.inspectUp()
-	end
-	for i = 1,ups do
-		turtle.down()
-	end
-end
-
 local function update()
 	print("Updating location..")
 	scanned = scanner.scan()
@@ -236,7 +221,7 @@ local function giveMeTheSaplings(bitch)
 	
 	local entities = scanner.sense()
 	for _,entity in pairs(entities) do
-		if entity.displayName == "item.tile.sapling.oak" and entity.y < 3 and entity.z > -scanner_radius and entity.z < scanner_radius and entity.x > -scanner_radius and entity.x < scanner_radius then
+		if entity.displayName == "item.tile.sapling.oak" and entity.y > -2 and entity.y < 3 and entity.z > -scanner_radius and entity.z < scanner_radius and entity.x > -scanner_radius and entity.x < scanner_radius then
 			go_to(round(entity.x),round(entity.y+1),round(entity.z),true)
 			go_to(round(entity.x),0,round(entity.z),true)
 			turtle.suckDown()
@@ -256,28 +241,33 @@ local repeats = 0
 
 while true do
 	sleep(1)
-	while turtle.getFuelLevel() < 17*17*2 do
+	while turtle.getFuelLevel() < 17*17*17 do
 		print("Fuel level too low! Refueling..")
 		if refuel() < 17*17*6 then
 			print("Fuel: " .. tostring( turtle.getFuelLevel() ).."/"..tostring(17*17*6) )
 			sleep(60)
 		end
 	end
-	local found, targets = findBlocks(scanned,"minecraft:log")
+	local found, targets = findBlocks(scanned,"minecraft:log",true)
 	if found  and repeats < 5 then
 		repeats = repeats+1
 		print("Trees found")
+		local oldX,oldZ = 0,0
 		for _,target in pairs(targets) do
-			go_to(target.x,0,target.z)
-			fucktrees()
+			if target.y ~= 0 then 
+				if target.x ~= oldX or target.z ~= oldZ then
+					oldX, oldZ = target.x, target.z
+					go_to(target.x,0,target.z)
+				end
+				go_to(target.x,target.y,target.z,true) 
+			end
 		end
 		update()
-		storage.pullItems(self,1,64)
-		storage.pullItems(self,2,64)
-		storage.pullItems(self,3,64)
-		storage.pullItems(self,4,64)
-		storage.pullItems(self,5,64)
-		storage.pullItems(self,6,64)
+		for i = 1,16 do
+			if turtle.getItemCount(i)>1 then
+				storage.pullItems(self,i,64)
+			end
+		end
 	else
 		repeats = 0
 		giveMeTheSaplings()
