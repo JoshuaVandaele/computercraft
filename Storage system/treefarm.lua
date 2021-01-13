@@ -73,7 +73,10 @@ local function go_to(x,y,z,yLast,dangerOk)
 		if y < 0 then
 			for i = 1,math.abs(y) do
 				if not turtle.down() then
-					turtle.digDown()
+					local t,inspect = turtle.inspectDown()
+					if not t or inspect.name ~= "minecraft:dirt" then
+						turtle.digDown()
+					end
 					turtle.down()
 				end
 			end
@@ -107,7 +110,10 @@ local function go_to(x,y,z,yLast,dangerOk)
 		if y < 0 then
 			for i = 1,math.abs(y) do
 				if not turtle.down() then
-					turtle.digDown()
+					local t,inspect = turtle.inspectDown()
+					if not t or inspect.name ~= "minecraft:dirt" then
+						turtle.digDown()
+					end
 					turtle.down()
 				end
 			end
@@ -197,7 +203,7 @@ local function replant(scanned)
 	end
 	
 	local pushed = storage.pushItems(self,27,#plantable,1)
-	if not pushed or pushed == 0 then return end
+	if not pushed or pushed < 1 then return end
 	print(#plantable.." sapplings missing, got "..pushed)
 	print("FUEL OK")
 
