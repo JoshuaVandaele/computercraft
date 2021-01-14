@@ -1,4 +1,4 @@
-local storageChest = "minecraft:ironchest_diamond_6877"
+local storageChest = "minecraft:ironchest_diamond_7100"
 local trashChest = "minecraft:ender chest_352"
 local storageSlots = {
   ["harvestcraft:potitem"] = 1,
