@@ -89,8 +89,10 @@ while true do
 	mon.clear()
 	if giveItems() then
 		writeCentered(" Please wait...")
+		log("dropped items")
 	else
 		writeCentered(" Error!")
+		log("Couldn't drop items")
 	end
 		writeBottomCentered(config.wait.." seconds")
 	sleep(config.wait)
