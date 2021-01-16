@@ -118,6 +118,7 @@ function turnL(x)
 end
 
 function refuel()
+	storage.pushItems(self, storageSlots["minecraft:coal"], 64)
 	print("Refueling..")
 	for i = 1,16 do
 		turtle.select(i)

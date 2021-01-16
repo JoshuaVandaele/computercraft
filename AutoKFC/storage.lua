@@ -63,6 +63,7 @@ local storageSlots = {
   ["harvestcraft:southernstylebreakfastitem"] = 97,
   ["harvestcraft:heartybreakfastitem"] = 98,
   ["harvestcraft:friedfeastitem"] = 99,
+  ["minecraft:coal"] = 108
   
 }
 
