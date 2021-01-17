@@ -76,6 +76,8 @@ local function giveItems(slot,amount)
 	return true
 end
 
+sleep(1)
+
 while true do
 	mon.setBackgroundColor(colors.green)
 	mon.clear()
@@ -84,16 +86,18 @@ while true do
 
 	writeBottomCentered(" Click here!")
 
-	os.pullEvent("monitor_touch")
-	mon.setBackgroundColor(colors.red)
-	mon.clear()
-	if giveItems() then
-		writeCentered(" Please wait...")
-		log("dropped items")
-	else
-		writeCentered(" Error!")
-		log("Couldn't drop items")
+	_,direction = os.pullEvent("monitor_touch","top")
+	if direction == "top" then
+		mon.setBackgroundColor(colors.red)
+		mon.clear()
+		if giveItems() then
+			writeCentered(" Please wait...")
+			log("dropped items")
+		else
+			writeCentered(" Error!")
+			log("Couldn't drop items")
+		end
+			writeBottomCentered(config.wait.." seconds")
+		sleep(config.wait)
 	end
-		writeBottomCentered(config.wait.." seconds")
-	sleep(config.wait)
 end
