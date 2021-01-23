@@ -1,3 +1,4 @@
+print('Plethorhacks by Folfy_Blue')
 local neural = peripheral.wrap("back")
 
 local modules = {"plethora:kinetic","plethora:scanner","plethora:introspection","plethora:sensor","plethora:laser"}
