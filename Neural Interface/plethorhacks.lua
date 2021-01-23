@@ -123,7 +123,7 @@ local function targetEntity(hackz)
 end
 
 hacks.killaura = {
-  ["requirements"] = {["plethora:scanner"] = true, ["plethora:kinetic"] = true},
+  ["requirements"] = {["plethora:sensor"] = true, ["plethora:kinetic"] = true},
   ["enabled"] = false,
   ["settings"] = {},
   ["func"] = "targetEntity",
@@ -131,7 +131,7 @@ hacks.killaura = {
 }
 
 hacks.laseraura = {
-  ["requirements"] = {["plethora:scanner"] = true, ["plethora:laser"] = true},
+  ["requirements"] = {["plethora:sensor"] = true, ["plethora:laser"] = true},
   ["enabled"] = false,
   ["settings"] = config.laseraura,
   ["func"] = "targetEntity",
@@ -139,7 +139,7 @@ hacks.laseraura = {
 }
 
 hacks.tracers = {
-  ["requirements"] = {["plethora:scanner"] = true, ["plethora:glasses"] = true},
+  ["requirements"] = {["plethora:sensor"] = true, ["plethora:glasses"] = true},
   ["enabled"] = false,
   ["settings"] = {},
   ["func"] = "targetEntity",
