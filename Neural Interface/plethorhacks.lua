@@ -2,7 +2,6 @@
 TODO:
 Fly
 XRay
-Autominer
 Autowalking
 Autotravel
 ]]
@@ -363,7 +362,9 @@ end
 
 local function cmdShell()
   local input = ""
+  term.setTextColor(colors.blue)
   io.write("> ")
+  term.setTextColor(colors.lightBlue)
   while true do
       local event, key = os.pullEvent()
       if event == "key" then
@@ -374,6 +375,7 @@ local function cmdShell()
           io.write(" ")
           term.setCursorPos(x-1,y)
         elseif key == keys.enter then
+          term.setTextColor(colors.yellow)
           print()
           cmd = strsplit(input, " ")
           if commands[cmd[1]] then
@@ -395,7 +397,9 @@ local function cmdShell()
           end
           input = "" 
           print()
+          term.setTextColor(colors.blue)
           io.write("> ")
+          term.setTextColor(colors.lightBlue)
         end
       elseif event == "char" then
         input = input..key
