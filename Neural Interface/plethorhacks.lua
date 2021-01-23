@@ -1,3 +1,11 @@
+--[[
+TODO:
+Xray
+Autominer
+Autowalking
+Autotravel
+]]
+
 print('Plethorhacks by Folfy_Blue')
 local neural = peripheral.wrap("back")
 
@@ -84,9 +92,8 @@ local function targetEntity(hackz)
   if not hackz or not hackz[1] then return end
   local entities = neural.sense()
   for _,entity in pairs(entities) do
-    if config.blacklist[entity.name] then break end
     for _,hack in ipairs(hackz) do
-      if hack["targets"] and hack["targets"][1] then
+      if hack["targets"] and hack["targets"][1] and not config.blacklist[entity.name] then
         for _, target in pairs(hack["targets"]) do
           if entity.name == target then
             local x, y, z = entity.x, entity.y, entity.z
@@ -100,7 +107,7 @@ local function targetEntity(hackz)
             end
           end
         end
-      else
+      elseif not config.blacklist[entity.name] then
         local x, y, z = entity.x, entity.y, entity.z
         if hack.yawpitch then
           local pitch = -math.atan2(y, math.sqrt(x * x + z * z))
