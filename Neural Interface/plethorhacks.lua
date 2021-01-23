@@ -1,6 +1,7 @@
 --[[
 TODO:
-Xray
+Fly
+XRay
 Autominer
 Autowalking
 Autotravel
@@ -45,7 +46,7 @@ config.blacklist = unserialize("blacklist") or serialize({
 },"blacklist")
 
 config.laseraura = unserialize("laseraura") or serialize({["power"]=1},"laseraura")
-
+config.miner = unserialize("miner") or serialize({["trigger"] = "minecraft:wooden_pickaxe"},"miner")
 
 local function ReverseTable(t)
     local reversedTable = {}
@@ -86,6 +87,13 @@ local function tracers(x,y,z)
   canvas.create().addLine({0,0,0},{x,y,z}).setScale(3)
 end
 
+local function miner(yaw,pitch)
+  local holding = neural.getEquipment().list()[1]
+  if holding and holding.name == config.miner.trigger or config.miner.trigger == "" then
+    neural.fire(yaw,pitch,3)
+  end
+end
+
 -- hackz = {[1] = {func = killaura, targets = {}, args = {}, yawpitch = true }}
 
 local function targetEntity(hackz)
@@ -122,6 +130,40 @@ local function targetEntity(hackz)
   end
 end
 
+local function targetBlock(hackz)
+  if not hackz or not hackz[1] then return end
+  local blocks = neural.scan()
+  for _,block in pairs(blocks) do
+    for _,hack in ipairs(hackz) do
+      if hack["targets"] and hack["targets"][1] and not config.blacklist[block.name] then
+        for _, target in pairs(hack["targets"]) do
+          if block.name == target then
+            local x, y, z = block.x, block.y, block.z
+            if hack.yawpitch then
+              local pitch = -math.atan2(y, math.sqrt(x * x + z * z))
+              local yaw = math.atan2(-x, z)
+              yaw,pitch = math.deg(yaw),math.deg(pitch)
+              hack.func(yaw,pitch,hackz.args)
+            else
+              hack.func(x,y,z,hackz.args)
+            end
+          end
+        end
+      elseif not config.blacklist[block.name] then
+        local owner = neural.getMetaOwner()
+        local yaw,pitch = owner.yaw,owner.pitch
+        local x,y,z = owner.x,owner.y,owner.z
+        if hack.yawpitch then
+          hack.func(yaw,pitch,hackz.args)
+        else
+          hack.func(x,y,z,hackz.args)
+        end
+      end
+    end
+  end
+end
+
+
 hacks.killaura = {
   ["requirements"] = {["plethora:sensor"] = true, ["plethora:kinetic"] = true},
   ["enabled"] = false,
@@ -146,10 +188,19 @@ hacks.tracers = {
   ["args"] = { ["func"] = tracers, ["targets"] = {} }
 }
 
+hacks.miner = {
+  ["requirements"] = {["plethora:scanner"] = true, ["plethora:laser"] = true, ["plethora:introspection"] = true},
+  ["enabled"] = false,
+  ["settings"] = config.miner,
+  ["func"] = "targetBlock",
+  ["args"] = { ["func"] = miner, ["targets"] = {}, ["yawpitch"] = true }
+}
+
 local function hack()
   while true do
     local functions = {
-      ["targetEntity"] = {}
+      ["targetEntity"] = {},
+      ["targetBlock"] = {}
     }
     local missing
     for name,hack in pairs(hacks) do
@@ -167,6 +218,7 @@ local function hack()
       end
     end
     targetEntity(functions.targetEntity)
+    targetBlock(functions.targetBlock)
     if refreshMax<refresh then
       if canvas then canvas.clear() end
       refresh = 0
@@ -179,7 +231,8 @@ end
 local commands = {
   ["killaura"] = {},
   ["laseraura"] = {},
-  ["tracers"] = {}
+  ["tracers"] = {},
+  ["miner"] = {},
 }
 
 local function help(cmd,subcmds)
@@ -291,6 +344,21 @@ end
 
 commands.tracers.target = function(targets)
   target("tracers",targets)
+end
+
+commands.miner.help = function()
+  help("miner",{
+    "target <blocks>",
+    "toggle"
+  })
+end
+
+commands.miner.toggle = function()
+  toggleHack("miner")
+end
+
+commands.miner.target = function(targets)
+  target("miner",targets)
 end
 
 local function cmdShell()
