@@ -360,6 +360,11 @@ commands.miner.target = function(targets)
   target("miner",targets)
 end
 
+commands.miner.settrigger = function(targets)
+  hacks.miner.settings.trigger = args[1]
+  serialize(hacks.miner.settings,"miner")
+end
+
 local function cmdShell()
   local input = ""
   term.setTextColor(colors.blue)
