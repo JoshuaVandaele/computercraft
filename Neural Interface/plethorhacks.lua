@@ -373,7 +373,7 @@ local function cmdShell()
   while true do
       local event, key = os.pullEvent()
       if event == "key" then
-        if key == keys.backspace then
+        if key == keys.backspace and #input > 0 then
           input = input:sub(1, -2)
           local x,y = term.getCursorPos()
           term.setCursorPos(x-1,y)
