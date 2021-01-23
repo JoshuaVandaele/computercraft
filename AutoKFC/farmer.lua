@@ -144,11 +144,12 @@ function trashItems()
 	end
 end
 
-if not storage then
+if not storageSlots then
+	print('Going home')
 	position = unserialize("pos") or {["x"] = 0, ["y"] = 0, ["z"] = 0}
 	rotation = unserialize("rotation") or 0
 	print("We are at "..position.x.." "..position.y.." "..position.z.." at rotation "..rotation)
-	if position.x  ~= position.y and position.x ~= position.z and position.x~= 0 then
+	if position.x  ~= 0 or position.z ~= 0 or position.y~= 0 then
 		while rotation ~= 2 do
 			turnR()
 		end
