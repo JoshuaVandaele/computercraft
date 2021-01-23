@@ -4,6 +4,7 @@ Fly
 XRay
 Autowalking
 Autotravel
+Command history
 ]]
 
 print('Plethorhacks by Folfy_Blue')
