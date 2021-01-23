@@ -221,6 +221,15 @@ commands.entities = function()
   end
 end
 
+commands.panic = function()
+  for k in pairs(hacks) do
+    if hacks[k].enabled then
+      hacks[k].enabled = false
+      print("Disabled "..k)
+    end
+  end
+end
+
 commands.killaura.help = function()
   help("killaura",{
     "target <entities>",
