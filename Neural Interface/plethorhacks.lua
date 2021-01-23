@@ -5,6 +5,7 @@ XRay
 Autowalking
 Autotravel
 Command history
+single mode for target functions
 ]]
 
 print('Plethorhacks by Folfy_Blue')
@@ -75,7 +76,7 @@ local refreshMax = 3
 
 local function killaura(yaw,pitch)
   neural.look(yaw,pitch)
-  neural.swing()
+  return neural.swing()
 end
 
 local function laseraura(yaw,pitch)
@@ -109,9 +110,9 @@ local function targetEntity(hackz)
               local pitch = -math.atan2(y, math.sqrt(x * x + z * z))
               local yaw = math.atan2(-x, z)
               yaw,pitch = math.deg(yaw),math.deg(pitch)
-              hack.func(yaw,pitch,hackz.args)
+              if hack.func(yaw,pitch,hackz.args) then return end
             else
-              hack.func(x,y,z,hackz.args)
+              if hack.func(x,y,z,hackz.args) then return end
             end
           end
         end
@@ -121,9 +122,9 @@ local function targetEntity(hackz)
           local pitch = -math.atan2(y, math.sqrt(x * x + z * z))
           local yaw = math.atan2(-x, z)
           yaw,pitch = math.deg(yaw),math.deg(pitch)
-          hack.func(yaw,pitch,hackz.args)
+          if hack.func(yaw,pitch,hackz.args) then return end
         else
-          hack.func(x,y,z,hackz.args)
+          if hack.func(x,y,z,hackz.args) then return end
         end
       end
     end
