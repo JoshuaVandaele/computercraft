@@ -6,14 +6,37 @@ local modules = neural.listModules()
 
 if neural.canvas3d then canvas = neural.canvas3d() end
 
-local targetBlacklist = {
+local function unserialize(name)  -- Get data
+  local data
+    if fs.exists('/.plethorhacks/'..name) then
+        local f = fs.open('/.plethorhacks/'..name, 'r')
+        data = textutils.unserialize(f.readAll())
+        f.close()
+    end
+    return data
+end
+
+local function serialize(data, name)  -- Store data
+    if not fs.exists('/.plethorhacks') then
+        fs.makeDir('/.plethorhacks')
+    end
+    local f = fs.open('/.plethorhacks/'..name, 'w')
+    f.write(textutils.serialize(data))
+    f.close()
+    return data
+end
+
+local config = {}
+
+config.blacklist = unserialize("blacklist") or serialize({
   ["LeashKnot"] = true,
   ["Arrow"] = true,
   ["Item"] = true,
   ["XPOrb"] = true,
   ["Folfy_Blue"] = true,
-}
+},"blacklist")
 
+config.laseraura = unserialize("laseraura") or serialize({["power"]=1},"laseraura")
 
 
 local function ReverseTable(t)
@@ -61,7 +84,7 @@ local function targetEntity(hackz)
   if not hackz or not hackz[1] then return end
   local entities = neural.sense()
   for _,entity in pairs(entities) do
-    if targetBlacklist[entity.name] then break end
+    if config.blacklist[entity.name] then break end
     for _,hack in ipairs(hackz) do
       if hack["targets"] and hack["targets"][1] then
         for _, target in pairs(hack["targets"]) do
@@ -103,7 +126,7 @@ hacks.killaura = {
 hacks.laseraura = {
   ["requirements"] = {["plethora:scanner"] = true, ["plethora:laser"] = true},
   ["enabled"] = false,
-  ["settings"] = {["power"] = 1},
+  ["settings"] = config.laseraura,
   ["func"] = "targetEntity",
   ["args"] = { ["func"] = laseraura, ["targets"] = {}, ["yawpitch"] = true }
 }
@@ -235,6 +258,8 @@ commands.laseraura.power = function(args)
     return
   end
   hacks.laseraura.settings.power = tonumber(args[1])
+  serialize(hacks.laseraura.settings,"laseraura")
+
 end
 
 commands.tracers.help = function()
