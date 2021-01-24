@@ -2,10 +2,9 @@
 TODO:
 No fall
 XRay
-Autowalking
 Autotravel
-Command history
 Better targetting
+follow
 ]]
 
 print('Plethorhacks by Folfy_Blue')
@@ -49,6 +48,9 @@ config.blacklist = unserialize("blacklist") or serialize({
 config.laseraura = unserialize("laseraura") or serialize({["power"]=1},"laseraura")
 config.miner = unserialize("miner") or serialize({["trigger"] = "minecraft:wooden_pickaxe"},"miner")
 config.fly = unserialize("fly") or serialize({["delay"] = 0.25,["power"] = 4},"fly")
+config.walk = unserialize("walk") or serialize({["delay"] = 0,["power"] = 1.25},"walk")
+
+local history = unserialize("history") or serialize({"Easter egg!"},"history")
 
 local function ReverseTable(t)
     local reversedTable = {}
@@ -74,38 +76,9 @@ modules = ReverseTable(modules)
 local hacks = {}
 local cooldowns = {
   ["fly"] = 0,
+  ["walk"] = 0,
   ["refresh"] = 0,
 }
-
-local function killaura(yaw,pitch)
-  neural.look(yaw,pitch)
-  return neural.swing()
-end
-
-local function laseraura(yaw,pitch)
-  neural.fire(yaw,pitch,hacks.laseraura.settings.power)
-end
-
-local function tracers(x,y,z)
-  if not canvas then canvas = neural.canvas3d() end
-  canvas.create().addLine({0,0,0},{x,y,z}).setScale(3)
-end
-
-local function miner(yaw,pitch)
-  local holding = neural.getEquipment().list()[1]
-  if holding and holding.name == config.miner.trigger or config.miner.trigger == "" then
-    neural.fire(yaw,pitch,3)
-  end
-end
-
-local function fly()
-  owner = neural.getMetaOwner()
-  if owner.isSneaking and (os.clock()-cooldowns.fly > hacks.fly.settings.delay) then
-    yaw,pitch = owner.yaw,owner.pitch
-    neural.launch(yaw,pitch,hacks.fly.settings.power)
-    cooldowns.fly = os.clock()
-  end
-end
 
 -- hackz = {[1] = {func = killaura, targets = {}, args = {}, yawpitch = true }}
 
@@ -160,8 +133,8 @@ local function targetBlock(hackz)
             else
               hack.func(x,y,z,hack.args)
             end
-          end
-        end
+          end -- Plethorhacks made by Folfy_Blue
+        end   -- Hidden here for code stealers
       elseif not config.blacklist[block.name] then
         local owner = neural.getMetaOwner()
         local yaw,pitch = owner.yaw,owner.pitch
@@ -176,12 +149,49 @@ local function targetBlock(hackz)
   end
 end
 
-
 local function dummy(hackz)
   if not hackz or not hackz[1] then return end
     for _,hack in ipairs(hackz) do
       hack.func(hack.args)
     end
+end
+
+local function killaura(yaw,pitch)
+  neural.look(yaw,pitch)
+  return neural.swing()
+end
+
+local function laseraura(yaw,pitch)
+  neural.fire(yaw,pitch,hacks.laseraura.settings.power)
+end
+
+local function tracers(x,y,z)
+  if not canvas then canvas = neural.canvas3d() end
+  canvas.create().addLine({0,0,0},{x,y,z}).setScale(3)
+end
+
+local function miner(yaw,pitch)
+  local holding = neural.getEquipment().list()[1]
+  if holding and holding.name == config.miner.trigger or config.miner.trigger == "" then
+    neural.fire(yaw,pitch,3)
+  end
+end
+
+local function fly()
+  local owner = neural.getMetaOwner()
+  if owner.isSneaking and (os.clock()-cooldowns.fly > hacks.fly.settings.delay) then
+    yaw,pitch = owner.yaw,owner.pitch
+    neural.launch(yaw,pitch,hacks.fly.settings.power)
+    cooldowns.fly = os.clock()
+  end
+end
+
+local function walk(owner)
+  if not owner then owner = neural.getMetaOwner() end
+  if not owner.isSneaking and (os.clock()-cooldowns.walk > hacks.walk.settings.delay) then
+    neural.launch(owner.yaw,0,hacks.walk.settings.power)
+    cooldowns.walk = os.clock()
+  end
 end
 
 hacks.killaura = {
@@ -224,6 +234,14 @@ hacks.fly = {
   ["args"] = { ["func"] = fly }
 }
 
+hacks.walk = {
+  ["requirements"] = {["plethora:kinetic"] = true, ["plethora:sensor"] = true, ["plethora:introspection"] = true},
+  ["enabled"] = false,
+  ["settings"] = config.walk,
+  ["func"] = "dummy",
+  ["args"] = { ["func"] = walk }
+}
+
 local function hack()
   while true do
     local functions = {
@@ -264,6 +282,7 @@ local commands = {
   ["tracers"] = {},
   ["miner"] = {},
   ["fly"] = {},
+  ["autowalk"] = {},
 }
 
 local function help(cmd,subcmds)
@@ -339,7 +358,7 @@ end
 commands.laseraura.help = function()
   help("laseraura",{
     "target <entities>",
-    "power <0.5-5>",
+    "power <0.5-5> (default 1)",
     "toggle"
   })
 end
@@ -399,8 +418,8 @@ end
 
 commands.fly.help = function()
   help("fly",{
-    "setDelay <time in seconds>",
-    "setPower <0-4>",
+    "setDelay <time in seconds> (default 0.25)",
+    "setPower <0-4> (default 1)",
     "toggle"
   })
 end
@@ -420,22 +439,93 @@ commands.fly.setPower = function(args)
   serialize(hacks.fly.settings,"fly")
 end
 
+commands.autowalk.help = function()
+  help("autowalk",{
+    "setDelay <time in seconds> (default 0)",
+    "setPower <0-4> (default 1.25)",
+    "toggle"
+  })
+end
+
+commands.autowalk.toggle = function()
+  toggleHack("walk")
+end
+
+commands.autowalk.setDelay = function(args)
+  hacks.walk.settings.delay = tonumber(args[1]) or 0
+  serialize(hacks.walk.settings,"walk")
+end
+
+
+commands.autowalk.setPower = function(args)
+  hacks.walk.settings.power = tonumber(args[1]) or 4
+  serialize(hacks.walk.settings,"walk")
+end
+
+
 
 local function cmdShell()
+  local historyPos = 0
   local input = ""
   term.setTextColor(colors.blue)
   io.write("> ")
   term.setTextColor(colors.lightBlue)
   while true do
       local event, key = os.pullEvent()
-      if event == "key" then
-        if key == keys.backspace and #input > 0 then
+      local x,y = term.getCursorPos()
+      if key == keys.rightCtrl then
+        print("historyPos: "..historyPos)
+        print("input: "..input)
+        sleep(1)
+      elseif event == "key" then
+        if key == keys.up then
+          if not history[0] then
+            history[0] = input or ""
+          end
+          historyPos=historyPos+1
+          if history[historyPos] then
+            term.setCursorPos(1,y)
+            for i = 1,#input+2 do
+              io.write(" ")
+            end
+            input = history[historyPos]
+            term.setCursorPos(1,y)
+            term.setTextColor(colors.blue)
+            io.write("> ")
+            term.setTextColor(colors.lightBlue)
+            io.write(input)
+          else
+            historyPos = historyPos-1
+          end
+        elseif key == keys.down then
+          historyPos=historyPos-1
+          if history[historyPos] then
+            term.setCursorPos(1,y)
+            for i = 1,#input+2 do
+              io.write(" ")
+            end
+            input = history[historyPos]
+            term.setCursorPos(1,y)
+            term.setTextColor(colors.blue)
+            io.write("> ")
+            term.setTextColor(colors.lightBlue)
+            io.write(input)
+          else
+            historyPos = historyPos+1
+          end
+
+        elseif key == keys.backspace and #input > 0 then
           input = input:sub(1, -2)
-          local x,y = term.getCursorPos()
           term.setCursorPos(x-1,y)
           io.write(" ")
           term.setCursorPos(x-1,y)
         elseif key == keys.enter then
+          history[0] = nil
+          for i = 10,1,-1 do
+            history[i+1] = history[i]
+          end
+          history[1] = input
+          serialize(history,"history")
           term.setTextColor(colors.yellow)
           print()
           cmd = strsplit(input, " ")
