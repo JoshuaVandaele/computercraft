@@ -415,7 +415,7 @@ commands.fly.setDelay = function(args)
 end
 
 
-commands.fly.setPower = function([args])
+commands.fly.setPower = function(args)
   hacks.fly.settings.power = tonumber(args[1]) or 4
   serialize(hacks.fly.settings,"fly")
 end
