@@ -1,11 +1,11 @@
 --[[
 TODO:
-Fly
+No fall
 XRay
 Autowalking
 Autotravel
 Command history
-single mode for target functions
+Better targetting
 ]]
 
 print('Plethorhacks by Folfy_Blue')
@@ -48,7 +48,7 @@ config.blacklist = unserialize("blacklist") or serialize({
 
 config.laseraura = unserialize("laseraura") or serialize({["power"]=1},"laseraura")
 config.miner = unserialize("miner") or serialize({["trigger"] = "minecraft:wooden_pickaxe"},"miner")
-config.fly = unserialize("fly") or serialize({["delay"] = 0.25},"fly")
+config.fly = unserialize("fly") or serialize({["delay"] = 0.25,["power"] = 4},"fly")
 
 local function ReverseTable(t)
     local reversedTable = {}
@@ -102,7 +102,7 @@ local function fly()
   owner = neural.getMetaOwner()
   if owner.isSneaking and (os.clock()-cooldowns.fly > hacks.fly.settings.delay) then
     yaw,pitch = owner.yaw,owner.pitch
-    neural.launch(yaw,pitch,4)
+    neural.launch(yaw,pitch,hacks.fly.settings.power)
     cooldowns.fly = os.clock()
   end
 end
@@ -400,6 +400,7 @@ end
 commands.fly.help = function()
   help("fly",{
     "setDelay <time in seconds>",
+    "setPower <0-4>",
     "toggle"
   })
 end
@@ -408,10 +409,17 @@ commands.fly.toggle = function()
   toggleHack("fly")
 end
 
-commands.fly.setDelay = function(delay)
-  hacks.fly.settings.trigger = tonumber(args[1]) or 0
+commands.fly.setDelay = function(args)
+  hacks.fly.settings.delay = tonumber(args[1]) or 0
   serialize(hacks.fly.settings,"fly")
 end
+
+
+commands.fly.setPower = function([args])
+  hacks.fly.settings.power = tonumber(args[1]) or 4
+  serialize(hacks.fly.settings,"fly")
+end
+
 
 local function cmdShell()
   local input = ""
