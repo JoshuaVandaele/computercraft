@@ -48,6 +48,7 @@ config.blacklist = unserialize("blacklist") or serialize({
 
 config.laseraura = unserialize("laseraura") or serialize({["power"]=1},"laseraura")
 config.miner = unserialize("miner") or serialize({["trigger"] = "minecraft:wooden_pickaxe"},"miner")
+config.fly = unserialize("fly") or serialize({["delay"] = 0.25},"fly")
 
 local function ReverseTable(t)
     local reversedTable = {}
@@ -71,8 +72,10 @@ end
 modules = ReverseTable(modules)
 
 local hacks = {}
-local refresh = 0
-local refreshMax = 3
+local cooldowns = {
+  ["fly"] = 0,
+  ["refresh"] = 0,
+}
 
 local function killaura(yaw,pitch)
   neural.look(yaw,pitch)
@@ -92,6 +95,15 @@ local function miner(yaw,pitch)
   local holding = neural.getEquipment().list()[1]
   if holding and holding.name == config.miner.trigger or config.miner.trigger == "" then
     neural.fire(yaw,pitch,3)
+  end
+end
+
+local function fly()
+  owner = neural.getMetaOwner()
+  if owner.isSneaking and (os.clock()-cooldowns.fly > hacks.fly.settings.delay) then
+    yaw,pitch = owner.yaw,owner.pitch
+    neural.launch(yaw,pitch,4)
+    cooldowns.fly = os.clock()
   end
 end
 
@@ -144,9 +156,9 @@ local function targetBlock(hackz)
               local pitch = -math.atan2(y, math.sqrt(x * x + z * z))
               local yaw = math.atan2(-x, z)
               yaw,pitch = math.deg(yaw),math.deg(pitch)
-              hack.func(yaw,pitch,hackz.args)
+              hack.func(yaw,pitch,hack.args)
             else
-              hack.func(x,y,z,hackz.args)
+              hack.func(x,y,z,hack.args)
             end
           end
         end
@@ -155,15 +167,22 @@ local function targetBlock(hackz)
         local yaw,pitch = owner.yaw,owner.pitch
         local x,y,z = owner.x,owner.y,owner.z
         if hack.yawpitch then
-          hack.func(yaw,pitch,hackz.args)
+          hack.func(yaw,pitch,hack.args)
         else
-          hack.func(x,y,z,hackz.args)
+          hack.func(x,y,z,hack.args)
         end
       end
     end
   end
 end
 
+
+local function dummy(hackz)
+  if not hackz or not hackz[1] then return end
+    for _,hack in ipairs(hackz) do
+      hack.func(hack.args)
+    end
+end
 
 hacks.killaura = {
   ["requirements"] = {["plethora:sensor"] = true, ["plethora:kinetic"] = true},
@@ -197,11 +216,20 @@ hacks.miner = {
   ["args"] = { ["func"] = miner, ["targets"] = {}, ["yawpitch"] = true }
 }
 
+hacks.fly = {
+  ["requirements"] = {["plethora:kinetic"] = true, ["plethora:sensor"] = true, ["plethora:introspection"] = true},
+  ["enabled"] = false,
+  ["settings"] = config.fly,
+  ["func"] = "dummy",
+  ["args"] = { ["func"] = fly }
+}
+
 local function hack()
   while true do
     local functions = {
       ["targetEntity"] = {},
-      ["targetBlock"] = {}
+      ["targetBlock"] = {},
+      ["dummy"] = {},
     }
     local missing
     for name,hack in pairs(hacks) do
@@ -220,11 +248,12 @@ local function hack()
     end
     targetEntity(functions.targetEntity)
     targetBlock(functions.targetBlock)
-    if refreshMax<refresh then
+    dummy(functions.dummy)
+    if 3<cooldowns.refresh then
       if canvas then canvas.clear() end
-      refresh = 0
+      cooldowns.refresh = 0
     end
-    refresh=refresh+1
+    cooldowns.refresh=cooldowns.refresh+1
     sleep(0)
   end
 end
@@ -234,6 +263,7 @@ local commands = {
   ["laseraura"] = {},
   ["tracers"] = {},
   ["miner"] = {},
+  ["fly"] = {},
 }
 
 local function help(cmd,subcmds)
@@ -362,9 +392,25 @@ commands.miner.target = function(targets)
   target("miner",targets)
 end
 
-commands.miner.settrigger = function(targets)
+commands.miner.settrigger = function(args)
   hacks.miner.settings.trigger = args[1]
   serialize(hacks.miner.settings,"miner")
+end
+
+commands.fly.help = function()
+  help("fly",{
+    "setDelay <time in seconds>",
+    "toggle"
+  })
+end
+
+commands.fly.toggle = function()
+  toggleHack("fly")
+end
+
+commands.fly.setDelay = function(delay)
+  hacks.fly.settings.trigger = tonumber(args[1]) or 0
+  serialize(hacks.fly.settings,"fly")
 end
 
 local function cmdShell()
